@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-using iMax.CommandParser.Infrastructure;
-using iMax.CommandParser.Exceptions;
-using iMax.CommandParser.Entities;
 
 namespace iMax.CommandParser.ConsoleUI
 {
@@ -20,7 +11,7 @@ namespace iMax.CommandParser.ConsoleUI
             bool isValid = false;
             Console.WriteLine(command);
 
-            Parser parser = new Parser(xmlPath);     
+            Parser parser = new Parser(xmlPath);
             ValidResult validResult = parser.IsValid(command);
             isValid = validResult.IsValid;
             if (!isValid)

@@ -1,5 +1,3 @@
-using System;
-
 namespace iMax.CommandParser
 {
     /// <summary>
@@ -7,6 +5,6 @@ namespace iMax.CommandParser
     /// </summary>
     internal interface ISimilarity
     {
-        float GetSimilarity(string string1, string string2);
+        double GetSimilarity(string value, string otherValue);
     }
 }

@@ -12,9 +12,34 @@ namespace iMax.CommandParser
     /// </summary>
     internal class Leven : ISimilarity
     {
+        public double GetSimilarity(string value, string otherValue)
+        {
+
+            float dis = this.ComputeDistance(value, otherValue);
+            float maxLen = value.Length;
+            if (maxLen < (float)otherValue.Length)
+            {
+                maxLen = otherValue.Length;
+            }
+            float minLen = value.Length;
+            if (minLen > (float)otherValue.Length)
+            {
+                minLen = otherValue.Length;
+            }
+
+            if (maxLen == 0.0F)
+            {
+                return 1.0F;
+            }
+            else
+            {
+                return maxLen - dis;
+            }
+        }
+
         private int Min3(int a, int b, int c)
         {
-            return System.Math.Min(System.Math.Min(a, b), c);
+            return Math.Min(Math.Min(a, b), c);
         }
 
         private int ComputeDistance(string s, string t)
@@ -27,8 +52,14 @@ namespace iMax.CommandParser
             if (n == 0) return m;
             if (m == 0) return n;
             //init1
-            for (int i = 0; i <= n; distance[i, 0] = i++) ;
-            for (int j = 0; j <= m; distance[0, j] = j++) ;
+            for (int i = 0; i <= n; i++)
+            {
+                distance[i, 0] = i;
+            }
+            for (int j = 0; j <= m; j++)
+            {
+                distance[0, j] = j;
+            }
 
             //find min distance
             for (int i = 1; i <= n; i++)
@@ -36,36 +67,11 @@ namespace iMax.CommandParser
                 for (int j = 1; j <= m; j++)
                 {
                     cost = (t.Substring(j - 1, 1) == s.Substring(i - 1, 1) ? 0 : 1);
-                    distance[i, j] = Min3(distance[i - 1, j] + 1,
-                        distance[i, j - 1] + 1,
-                        distance[i - 1, j - 1] + cost);
+                    distance[i, j] = this.Min3(distance[i - 1, j] + 1, distance[i, j - 1] + 1, distance[i - 1, j - 1] + cost);
                 }
             }
 
             return distance[n, m];
-        }
-
-        public float GetSimilarity(System.String string1, System.String string2)
-        {
-
-            float dis = ComputeDistance(string1, string2);
-            float maxLen = string1.Length;
-            if (maxLen < (float)string2.Length)
-                maxLen = string2.Length;
-
-            float minLen = string1.Length;
-            if (minLen > (float)string2.Length)
-                minLen = string2.Length;
-
-
-            if (maxLen == 0.0F)
-                return 1.0F;
-            else
-            {
-                return maxLen - dis;
-                //return 1.0F - dis / maxLen;
-                //return (float)Math.Round(1.0F - dis / maxLen, 1) * 10;
-            }
         }
     }
 }
