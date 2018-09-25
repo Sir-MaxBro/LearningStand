@@ -14,7 +14,7 @@ namespace Stand.UI.Windows
         private IProtocol _protocol;
         public ProtocolWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public IProtocol Protocol
@@ -32,7 +32,7 @@ namespace Stand.UI.Windows
                 .OfType<RadioButton>()
                 .FirstOrDefault(x => (bool)x.IsChecked)
                 .Tag.ToString();
-            _protocol = DependencyContainer.GetProtocol(protocolName);
+            _protocol = IoC.GetProtocol(protocolName);
             this.CloseWindow();
         }
 

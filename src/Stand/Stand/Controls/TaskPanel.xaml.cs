@@ -15,54 +15,35 @@ namespace Stand.UI.Controls
     /// </summary>
     public partial class TaskPanel : UserControl, INotifyPropertyChanged
     {
-        private IList<TaskControl> _tasks = new List<TaskControl>();
-        private int _currentIndex = -1;
-        private TaskControl _currentTask;
+        private const string LAB_EXTENSION = ".xml";
+
+        private readonly string PATH_TO_LABS = System.AppDomain.CurrentDomain.BaseDirectory + "\\App_Data\\labs_tasks";
+
         public event PropertyChangedEventHandler PropertyChanged;
-        private readonly string LABS_PATH = System.AppDomain.CurrentDomain.BaseDirectory + "\\App_Data\\labs_tasks";
-        private XDocument _xdocument;
+
+        private IList<TaskControl> _tasks = new List<TaskControl>();
+        private TaskControl _currentTask;
         private ICompiler _compiler;
+        private int _currentIndex = -1;
+
         public TaskPanel()
         {
             InitializeComponent();
             this.DataContext = this;
 
-            DirectoryInfo directory = new DirectoryInfo(LABS_PATH);
-            var listFiles = directory.GetFiles("*.xml")
-                .Select(x => x.Name.Substring(0, x.Name.Length - 4));
-            cmbLabs.ItemsSource = listFiles;
-        }
-
-        private void FillTasks(string path)
-        {
-            try
-            {
-                _xdocument = XDocument.Load(path);
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                throw ex;
-            }
-            var commands = from xnode in _xdocument.Elements("Commands").Elements("Command")
-                           select xnode;
-            _tasks.Clear();
-
-            foreach (var item in commands)
-            {
-                var taskControl = new TaskControl();
-                taskControl.Description = item.Attribute("description").Value;
-                taskControl.TaskCommand = item.Attribute("name").Value;
-                taskControl.IsDone = false;
-                _tasks.Add(taskControl);
-            }
-            tStack.Items.Refresh();
-            NextCurrent();
+            DirectoryInfo directory = new DirectoryInfo(PATH_TO_LABS);
+            var listFiles = directory.GetFiles("*" + LAB_EXTENSION)
+                .Select(file => file.Name.Substring(0, file.Name.Length - LAB_EXTENSION.Length));
+            labsComboBox.ItemsSource = listFiles;
         }
 
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            var propertyChanged = this.PropertyChanged;
+            if (propertyChanged != null)
+            {
+                propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         public IList<TaskControl> Tasks
@@ -73,7 +54,7 @@ namespace Stand.UI.Controls
                 if (_tasks != value)
                 {
                     _tasks = value;
-                    OnPropertyChanged("Tasks");
+                    this.OnPropertyChanged("Tasks");
                 }
             }
         }
@@ -87,16 +68,6 @@ namespace Stand.UI.Controls
         {
             _currentTask.IsDone = true;
             _currentTask.IsCurrent = false;
-        }
-
-        private void NextCurrent()
-        {
-            _currentIndex++;
-            if (_tasks.Count > _currentIndex)
-            {
-                _currentTask = _tasks[_currentIndex];
-                _currentTask.IsCurrent = true;
-            }
         }
 
         public ICompiler Compiler
@@ -115,15 +86,19 @@ namespace Stand.UI.Controls
             }
 
             command = command.Remove(0, command.IndexOf('#') + 1);
-            if (_currentTask.TaskCommand.ToLower() == command.Trim().ToLower())
+            if (_currentTask.RightTaskCommand.ToLower() == command.Trim().ToLower())
             {
                 checkCommand = true;
-                CurrentTaskComplete();
-                NextCurrent();
+                this.CurrentTaskComplete();
+                this.NextCurrent();
             }
-            else if (_compiler != null && _compiler.IsValid(command).IsValid)
+            else if (_compiler != null)
             {
-                throw new CommandNotMatchAssignment("Команда не соответствует заданию");
+                var isCommandValid = _compiler.IsValid(command).IsValid;
+                if (!isCommandValid)
+                {
+                    throw new CommandNotMatchAssignment("Команда не соответствует заданию");
+                }
             }
 
             return checkCommand;
@@ -134,8 +109,49 @@ namespace Stand.UI.Controls
             if ((sender as ComboBox).SelectedItem != null)
             {
                 string fileName = (sender as ComboBox).SelectedItem.ToString();
-                string fullPath = LABS_PATH + "\\" + fileName + ".xml";
-                FillTasks(fullPath);
+                string fullPath = PATH_TO_LABS + "\\" + fileName + LAB_EXTENSION;
+                this.LoadTasks(fullPath);
+            }
+        }
+
+        private void LoadTasks(string path)
+        {
+            XDocument xdocument = new XDocument();
+            try
+            {
+                xdocument = XDocument.Load(path);
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                throw ex;
+            }
+
+            var commands = xdocument.Elements("Commands").Elements("Command").ToList();
+
+            _tasks.Clear();
+
+            foreach (var command in commands)
+            {
+                var taskControl = new TaskControl
+                {
+                    Description = command.Attribute("description").Value,
+                    RightTaskCommand = command.Attribute("name").Value,
+                    IsDone = false
+                };
+                _tasks.Add(taskControl);
+            }
+
+            taskStackPanel.Items.Refresh();
+            this.NextCurrent();
+        }
+
+        private void NextCurrent()
+        {
+            _currentIndex++;
+            if (_tasks.Count > _currentIndex)
+            {
+                _currentTask = _tasks[_currentIndex];
+                _currentTask.IsCurrent = true;
             }
         }
     }

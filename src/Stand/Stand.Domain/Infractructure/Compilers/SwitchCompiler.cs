@@ -7,8 +7,8 @@ namespace Stand.Domain.Infractructure.Compilers
     {
         private static Parser _parser;
         private string _resource;
-        public SwitchCompiler()
-        { }
+
+        public SwitchCompiler() { }
 
         public string Resource
         {

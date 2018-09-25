@@ -12,12 +12,26 @@
             <RowDefinition Height="75"></RowDefinition>
             <RowDefinition Height="4*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Image Source="/Stand.UI;component/icon2.ico" HorizontalAlignment="Left" VerticalAlignment="Top" OpacityMask="#FFB00303" Stretch="Fill" Height="50" Width="50" />
-        <TextBlock Text="{ Binding ExceptionText}" TextWrapping="Wrap" 
-                   Grid.Row="1"  IsEnabled="False" Grid.ColumnSpan="2" 
-                   ClipToBounds="True" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Label Content="{Binding TimeLeft}" x:Name="timerLeft" 
-               VerticalAlignment="Top" Grid.Column="1" FontSize="25" 
+        <Image Source="/Stand.UI;component/icon2.ico" 
+               HorizontalAlignment="Left" 
+               VerticalAlignment="Top" 
+               OpacityMask="#FFB00303" 
+               Stretch="Fill" 
+               Height="50" 
+               Width="50" />
+        <TextBlock Text="{Binding ExceptionText}" 
+                   TextWrapping="Wrap" 
+                   Grid.Row="1" 
+                   IsEnabled="False" 
+                   Grid.ColumnSpan="2" 
+                   ClipToBounds="True" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"/>
+        <Label Content="{Binding TimeLeft}" 
+               x:Name="timerLeft" 
+               VerticalAlignment="Top" 
+               Grid.Column="1" 
+               FontSize="25" 
                HorizontalAlignment="Right"></Label>
     </Grid>
 </Window>

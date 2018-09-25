@@ -1,5 +1,4 @@
-﻿using Stand.Domain.Abstract;
-using Stand.UI.Infrastructure;
+﻿using Stand.UI.Infrastructure;
 using Stand.UI.Menu;
 using Stand.UI.Windows;
 using System.Linq;
@@ -13,23 +12,22 @@ namespace Stand.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IProtocol _protocol;
-        private Device _device;
         public MainWindow()
         {
-            InitializeComponent();
-            BindingMenu();
+            this.InitializeComponent();
+            this.BindingMenu();
         }
 
         private void BindingMenu()
         {
-            if (MenuData.Items.Count() == 0)
+            var menuItems = MenuData.GetMenuItems();
+            if (!menuItems.Any())
             {
                 labsMenuItem.IsEnabled = false;
             }
             else
             {
-                labsMenuItem.ItemsSource = MenuData.Items;
+                labsMenuItem.ItemsSource = menuItems;
             }
         }
 
@@ -47,14 +45,15 @@ namespace Stand.UI
             if (protocolWindow.ShowDialog().Value)
             {
                 // get protocol
-                _protocol = protocolWindow.Protocol;
+                var protocol = protocolWindow.Protocol;
                 string deviceName = (sender as Control).Tag.ToString();
 
                 // get device
-                _device = DependencyContainer.GetDevice(deviceName, _protocol);
-                _device.DeviceName = deviceName.Substring(0, 1).ToUpper() + deviceName.Substring(1, deviceName.Length - 1);
+                var device = IoC.GetDevice(deviceName, protocol);
+                device.DeviceName = deviceName.Substring(0, 1).ToUpper() + deviceName.Substring(1, deviceName.Length - 1);
+
                 // open deviceWindow
-                DeviceWindow deviceWindow = new DeviceWindow(_device);
+                DeviceWindow deviceWindow = new DeviceWindow(device);
                 // deviceWindow.Owner = this;
                 deviceWindow.Top = this.Top;
                 deviceWindow.Left = this.Left;

@@ -7,26 +7,24 @@ using Unity.Resolution;
 
 namespace Stand.UI.Infrastructure
 {
-    internal class DependencyContainer
+    internal class IoC
     {
+        private static IoC _dependencyContainer;
         private IUnityContainer _unityContainer;
-        private static DependencyContainer _dependencyContainer;
-        private DependencyContainer()
+
+        private IoC()
         {
             _unityContainer = new UnityContainer();
-            AddBindings();
+            this.AddBindings();
         }
 
-        private static DependencyContainer Instance
+        private static IoC GetInstance()
         {
-            get
+            if (_dependencyContainer == null)
             {
-                if (_dependencyContainer == null)
-                {
-                    _dependencyContainer = new DependencyContainer();
-                }
-                return _dependencyContainer;
+                _dependencyContainer = new IoC();
             }
+            return _dependencyContainer;
         }
 
         private void AddBindings()
@@ -43,12 +41,12 @@ namespace Stand.UI.Infrastructure
 
         public static IProtocol GetProtocol(string name)
         {
-            return Instance._unityContainer.Resolve<IProtocol>(name.ToLower());
+            return GetInstance()._unityContainer.Resolve<IProtocol>(name.ToLower());
         }
 
         public static ICompiler GetCompiler(string name)
         {
-            return Instance._unityContainer.Resolve<ICompiler>(name.ToLower());
+            return GetInstance()._unityContainer.Resolve<ICompiler>(name.ToLower());
         }
 
         public static Device GetDevice(string name, IProtocol protocol)
@@ -58,7 +56,7 @@ namespace Stand.UI.Infrastructure
                  new ParameterOverride("protocol", protocol),
                  new ParameterOverride("compiler", compiler)
             };
-            return Instance._unityContainer.Resolve<Device>(name.ToLower(), overrides);
+            return GetInstance()._unityContainer.Resolve<Device>(name.ToLower(), overrides);
         }
     }
 }
