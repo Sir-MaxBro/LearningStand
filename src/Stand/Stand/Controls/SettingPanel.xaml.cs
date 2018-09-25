@@ -8,43 +8,45 @@ namespace Stand.UI.Controls
     /// </summary>
     public partial class SettingPanel : UserControl
     {
-        private string _ipAddress;
-        private int _port;
+        private string _ipAddress = "10.203.0.3";
+        private int _port = 23;
+
         public event RoutedEventHandler Connect;
         public event RoutedEventHandler Disconnect;
+
         public SettingPanel()
         {
             InitializeComponent();
             this.DataContext = this;
-            _ipAddress = "10.203.0.3";
-            _port = 23;
         }
 
         public string IPAddress
         {
             get { return _ipAddress; }
-            set { this._ipAddress = value; }
+            set { _ipAddress = value; }
         }
 
         public int Port
         {
             get { return _port; }
-            set { this._port = value; }
+            set { _port = value; }
         }
 
         private void Connect_ButtonClick(object sender, RoutedEventArgs e)
         {
-            if (Connect != null)
+            var connect = Connect;
+            if (connect != null)
             {
-                Connect(sender, e);
+                connect(sender, e);
             }
         }
 
         private void Disconnect_ButtonClick(object sender, RoutedEventArgs e)
         {
-            if (Disconnect != null)
+            var disconnect = Disconnect;
+            if (disconnect != null)
             {
-                Disconnect(sender, e);
+                disconnect(sender, e);
             }
         }
     }

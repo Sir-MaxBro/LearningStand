@@ -1,16 +1,23 @@
-﻿using Stand.Domain.Exceptions;
+﻿using Stand.Domain.Abstract.Contracts;
+using Stand.Domain.Exceptions;
 using Stand.Domain.Infractructure.Events;
+using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Text;
 
 namespace Stand.Domain.Abstract
 {
+    [ContractClass(typeof(DeviceContract))]
     public abstract class Device
     {
+        private ReceivedEventHandler _receivedEvent;
+
         protected IProtocol _protocol;
         protected ICompiler _compiler;
+
         protected Device(IProtocol protocol, ICompiler compiler)
         {
-            this._protocol = protocol;
+            _protocol = protocol;
             _compiler = compiler;
         }
 
@@ -25,12 +32,20 @@ namespace Stand.Domain.Abstract
 
         public bool Connect(string host, int port)
         {
+            if (string.IsNullOrEmpty(host))
+            {
+                return false;
+            }
+
             return _protocol.Connect(host, port);
         }
 
         public void Disconnect()
         {
-            _protocol.Disconnect();
+            if (_protocol != null)
+            {
+                _protocol.Disconnect();
+            }
         }
 
         public void ExecuteCommand(string command)
@@ -44,10 +59,7 @@ namespace Stand.Domain.Abstract
             {
                 StringBuilder answer = new StringBuilder("Команда не найдена\n");
                 answer.AppendLine("Может вы имели ввиду: " + validResult.MostSimilarCommand);
-                //answer.Append(_invitation + "#");
-                //SendAnswer(answer.ToString());
                 throw new CommandNotFoundException(answer.ToString());
-                //global::System.Windows.Forms.MessageBox.Show("Test");
             }
         }
 
@@ -60,11 +72,21 @@ namespace Stand.Domain.Abstract
         {
             add
             {
-                _protocol.AnswerReceived += value;
+                lock (this)
+                {
+                    if (_receivedEvent == null
+                        || !_receivedEvent.GetInvocationList().Any(del => del.Method == value.Method))
+                    {
+                        _receivedEvent += value;
+                    }
+                }
             }
             remove
             {
-                _protocol.AnswerReceived -= value;
+                lock (this)
+                {
+                    _receivedEvent -= value;
+                }
             }
         }
     }

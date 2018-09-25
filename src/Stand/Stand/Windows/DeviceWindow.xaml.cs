@@ -16,13 +16,15 @@ namespace Stand.UI.Windows
         private string _ipAddress;
         private int _port;
         private bool _isConnected;
+
         public DeviceWindow(Device device)
         {
-            this._device = device;
-            this._device.AnswerReceived += AnswerReceiver;
+            _device = device;
+            _device.AnswerReceived += this.AnswerReceiver;
 
-            InitializeComponent();
-            if (!String.IsNullOrEmpty(device.DeviceName))
+            this.InitializeComponent();
+
+            if (!string.IsNullOrEmpty(device.DeviceName))
             {
                 this.Title = device.DeviceName;
             }
@@ -64,21 +66,23 @@ namespace Stand.UI.Windows
         {
             if (!_isConnected)
             {
-                // destroy dependency
-                bool connectedResult = _device.Connect(settingPanel.IPAddress, settingPanel.Port);
+                bool isConnectedSuccess = _device.Connect(settingPanel.IPAddress, settingPanel.Port);
 
-                if (!connectedResult)
+                if (!isConnectedSuccess)
                 {
-                    string message = "Не удалось установить подключение.";
-                    MessageBox.Show(message, "Error");
+                    string errorMessage = "Не удалось установить подключение.";
+                    MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                _isConnected = connectedResult;
+                _isConnected = isConnectedSuccess;
             }
         }
 
         private void Disconnect_ButtonClick(object sender, RoutedEventArgs e)
         {
-            _device.Disconnect();
+            if (_device != null)
+            {
+                _device.Disconnect();
+            }
             _isConnected = false;
         }
 

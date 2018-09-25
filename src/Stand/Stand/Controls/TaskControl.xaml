@@ -11,13 +11,16 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Label Name="pointLabel" HorizontalContentAlignment="Center" 
+        <Label HorizontalContentAlignment="Center" 
                VerticalContentAlignment="Center"
-               VerticalAlignment="Center" HorizontalAlignment="Center"
+               VerticalAlignment="Center" 
+               HorizontalAlignment="Center"
                FontSize="25" Margin="0"
                FontWeight="Bold">*</Label>
 
-        <TextBlock Name="taskTxt" Text="{Binding Description}" Foreground="{Binding TextColor, Mode=TwoWay}"
+        <TextBlock x:Name="taskTextBox" 
+                   Text="{Binding Description}" 
+                   Foreground="{Binding TextColor, Mode=TwoWay}"
                    FontSize="16" FontWeight="Normal" Grid.Column="1"
                    VerticalAlignment="Center"
                    TextWrapping="Wrap"></TextBlock>

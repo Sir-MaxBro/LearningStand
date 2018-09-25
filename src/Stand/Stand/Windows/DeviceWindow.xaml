@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:Stand.UI.Controls"
         Title="Устройство" Height="500" Width="800"
-        WindowStartupLocation="CenterOwner" Background="{DynamicResource BackgroundColor}">
+        WindowStartupLocation="CenterOwner" 
+        Background="{DynamicResource BackgroundColor}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60*" MinWidth="400"></ColumnDefinition>
@@ -14,21 +15,26 @@
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Controls:SettingPanel x:Name="settingPanel" Connect="Connect_ButtonClick"
-                               Disconnect="Disconnect_ButtonClick"></Controls:SettingPanel>
+        <Controls:SettingPanel x:Name="settingPanel" 
+                               Connect="Connect_ButtonClick"
+                               Disconnect="Disconnect_ButtonClick">
+        </Controls:SettingPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <Controls:Terminal x:Name="terminal" 
-                           SendingCommandToExecute="Terminal_SendingCommandToExecute" 
-                           IsEnabled="True"/>
+                               SendingCommandToExecute="Terminal_SendingCommandToExecute" 
+                               IsEnabled="True"/>
         </ScrollViewer>
 
         <GridSplitter Grid.Column="1" Background="#f0f0f0" Width="2" VerticalAlignment="Stretch" 
-                      HorizontalAlignment="Center" Grid.Row="1"
-                      ></GridSplitter>
+                      HorizontalAlignment="Center" Grid.Row="1">
+        </GridSplitter>
+
+        <Label Grid.Column="2" FontWeight="Bold" FontSize="16">
+            Задание
+        </Label>
         
-        <Label Grid.Column="2" FontWeight="Bold"
-               FontSize="16">Задание</Label>
         <Controls:TaskPanel x:Name="taskPanel" 
-                            Grid.Column="2" Grid.Row="1"></Controls:TaskPanel>
+                            Grid.Column="2" Grid.Row="1">
+        </Controls:TaskPanel>
     </Grid>
 </Window>

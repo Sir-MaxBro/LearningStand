@@ -48,6 +48,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\Contracts\DeviceContract.cs" />
     <Compile Include="Abstract\ICompiler.cs" />
     <Compile Include="Abstract\Device.cs" />
     <Compile Include="Abstract\IProtocol.cs" />

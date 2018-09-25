@@ -10,15 +10,18 @@ namespace Stand.UI.Controls
     /// </summary>
     public partial class TaskControl : UserControl, INotifyPropertyChanged
     {
-        private string _taskDescription;
-        private bool _isDone;
-        private string _taskCommand;
         private readonly Brush IS_DONE_COLOR = Brushes.Green;
         private readonly Brush IS_NOT_DONE_COLOR = Brushes.Gray;
         private readonly Brush CURRENT_COLOR = Brushes.Black;
-        private Brush _textColor;
-        public event PropertyChangedEventHandler PropertyChanged;
+
+        private string _taskDescription;
+        private string _rightTaskCommand;
+        private bool _isDone;
         private bool _isCurrent;
+        private Brush _textColor;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public TaskControl()
         {
             InitializeComponent();
@@ -27,8 +30,11 @@ namespace Stand.UI.Controls
 
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            var propertyChanged = this.PropertyChanged;
+            if (propertyChanged != null)
+            {
+                propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         public string Description
@@ -39,15 +45,15 @@ namespace Stand.UI.Controls
                 if (_taskDescription != value)
                 {
                     _taskDescription = value;
-                    OnPropertyChanged("Description");
+                    this.OnPropertyChanged("Description");
                 }
             }
         }
 
-        public string TaskCommand
+        public string RightTaskCommand
         {
-            get { return _taskCommand; }
-            set { _taskCommand = value; }
+            get { return _rightTaskCommand; }
+            set { _rightTaskCommand = value; }
         }
 
         public bool IsDone
@@ -58,17 +64,17 @@ namespace Stand.UI.Controls
                 _isDone = value;
                 if (_isDone)
                 {
-                    TextColor = IS_DONE_COLOR;
-                    taskTxt.FontWeight = FontWeights.Normal;
+                    this.TextColor = IS_DONE_COLOR;
+                    taskTextBox.FontWeight = FontWeights.Normal;
                 }
                 else
                 {
-                    TextColor = IS_NOT_DONE_COLOR;
+                    this.TextColor = IS_NOT_DONE_COLOR;
                 }
             }
         }
 
-        public Brush TextColor
+        protected Brush TextColor
         {
             get { return _textColor; }
             set
@@ -76,7 +82,7 @@ namespace Stand.UI.Controls
                 if (_textColor != value)
                 {
                     _textColor = value;
-                    OnPropertyChanged("TextColor");
+                    this.OnPropertyChanged("TextColor");
                 }
             }
         }
@@ -89,8 +95,8 @@ namespace Stand.UI.Controls
                 _isCurrent = value;
                 if (_isCurrent)
                 {
-                    taskTxt.FontWeight = FontWeights.Bold;
-                    TextColor = CURRENT_COLOR;
+                    taskTextBox.FontWeight = FontWeights.Bold;
+                    this.TextColor = CURRENT_COLOR;
                 }
             }
         }

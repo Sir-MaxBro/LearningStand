@@ -16,6 +16,7 @@ namespace Stand.Domain.Infractructure.Protocols
         private Client _telnetClient;
         //private Parser _parser;
         //private string _invitation;
+
         public TelnetProtocol()
         {
             //_parser = new Parser(Properties.Resources.TelnetSwitchCommands);
@@ -31,7 +32,8 @@ namespace Stand.Domain.Infractructure.Protocols
             {
                 return false;
             }
-            GetAnswer();
+
+            this.GetAnswer();
 
             return _telnetClient.IsConnected;
         }
@@ -43,7 +45,7 @@ namespace Stand.Domain.Infractructure.Protocols
                 var bytes = Encoding.Default.GetBytes(password);
                 password = Encoding.ASCII.GetString(bytes);
                 _telnetClient.WriteLine(password);
-                GetAnswer(password);
+                this.GetAnswer(password);
             }
         }
 
@@ -52,7 +54,7 @@ namespace Stand.Domain.Infractructure.Protocols
             if (_telnetClient != null)
             {
                 _telnetClient.Dispose();
-                SendAnswer("\nСоединение разорвано.\n");
+                this.SendAnswer("\nСоединение разорвано.\n");
             }
         }
 
@@ -62,19 +64,19 @@ namespace Stand.Domain.Infractructure.Protocols
 
             string currentCommand = commandSplit.ElementAtOrDefault(1);
 
-            if (String.IsNullOrEmpty(currentCommand))
+            if (string.IsNullOrEmpty(currentCommand))
             {
                 return;
             }
 
             if (commandSplit[0].ToLower().Contains("password"))
             {
-                TryPassword(currentCommand.Trim());
+                this.TryPassword(currentCommand.Trim());
             }
             else
             {
                 //_invitation = commandSplit[0];
-                ExecutingCommand(currentCommand.Trim());
+                this.ExecutingCommand(currentCommand.Trim());
             }
         }
 
@@ -86,7 +88,7 @@ namespace Stand.Domain.Infractructure.Protocols
                 command = Encoding.ASCII.GetString(bytes);
 
                 _telnetClient.WriteLine(command);
-                GetAnswer(command);
+                this.GetAnswer(command);
             }
         }
 
@@ -99,7 +101,7 @@ namespace Stand.Domain.Infractructure.Protocols
                 do
                 {
                     answer += _telnetClient.Read(new TimeSpan(1000));
-                } while (String.IsNullOrEmpty(answer) || answer == command);
+                } while (string.IsNullOrEmpty(answer) || answer == command);
             }
             else
             {
@@ -108,15 +110,16 @@ namespace Stand.Domain.Infractructure.Protocols
 
             answer = answer.TrimStart(command.ToCharArray());
 
-            SendAnswer(answer);
+            this.SendAnswer(answer);
         }
 
         public void SendAnswer(string message)
         {
-            if (AnswerReceived != null)
+            var answerReceived = this.AnswerReceived;
+            if (answerReceived != null)
             {
                 var receivedEventArgs = new ReceivedEventArgs { Answer = message };
-                AnswerReceived(this, receivedEventArgs);
+                answerReceived(this, receivedEventArgs);
             }
         }
     }

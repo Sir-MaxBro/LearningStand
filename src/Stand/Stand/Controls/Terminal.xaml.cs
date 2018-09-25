@@ -16,17 +16,19 @@ namespace Stand.UI.Controls
     /// </summary>
     public partial class Terminal : UserControl, INotifyPropertyChanged
     {
+        private const string NEW_LINE = "\n";
+
         public event CommandEventHandler SendingCommandToExecute;
         public event PropertyChangedEventHandler PropertyChanged;
+        private TextBox _terminal;
         private string _text;
         private int _caretIndex;
-        private const string NEW_LINE = "\n";
-        private TextBox _terminal;
+
         public Terminal()
         {
             InitializeComponent();
             this.DataContext = this;
-            this._terminal = terminal;
+            _terminal = terminal;
         }
 
         public string Text
@@ -37,32 +39,35 @@ namespace Stand.UI.Controls
                 if (_text != value)
                 {
                     _text = value;
-                    OnPropertyChanged("Text");
+                    this.OnPropertyChanged("Text");
                 }
             }
         }
 
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            var propertyChanged = this.PropertyChanged;
+            if (propertyChanged != null)
+            {
+                propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         private void Terminal_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                SetCommandToExecute();
+                this.SetCommandToExecute();
             }
             else if (e.Key == Key.Delete || e.Key == Key.Back)
             {
-                SetCaretToEnd(e, (x, y) => x >= y);
+                this.SetCaretToEnd(e, (x, y) => x >= y);
             }
         }
 
         private void Terminal_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            SetCaretToEnd(e, (x, y) => x > y);
+            this.SetCaretToEnd(e, (x, y) => x > y);
         }
 
         private void SetCaretToEnd(RoutedEventArgs e, Func<int, int, bool> checkCaretIndex)
@@ -78,9 +83,10 @@ namespace Stand.UI.Controls
 
         private void ExecuteCommand(string currentCommand)
         {
-            if (SendingCommandToExecute != null)
+            var sendingCommandToExecute = this.SendingCommandToExecute;
+            if (sendingCommandToExecute != null)
             {
-                SendingCommandToExecute(this, new CommandEventArgs { Command = currentCommand });
+                sendingCommandToExecute(this, new CommandEventArgs { Command = currentCommand });
             }
         }
 
@@ -88,31 +94,28 @@ namespace Stand.UI.Controls
         {
             try
             {
-                ExecuteCommand(_terminal.GetLineText(_terminal.LineCount - 1));
+                var command = _terminal.GetLineText(_terminal.LineCount - 1);
+                this.ExecuteCommand(command);
                 _terminal.CaretIndex = _terminal.Text.Length;
-                this._caretIndex = _terminal.CaretIndex;
+                _caretIndex = _terminal.CaretIndex;
             }
             catch (CommandNotFoundException ex)
             {
-                //MessageBox.Show(ex.Message, "Error");
                 ExceptionWindow window = new ExceptionWindow(ex.Message, 25);
                 window.ShowDialog();
             }
             catch (CommandNotMatchAssignment ex)
             {
-                //MessageBox.Show(ex.Message, "Error");
                 ExceptionWindow window = new ExceptionWindow(ex.Message, 25);
                 window.ShowDialog();
             }
             catch (EmptyTaskCommandsException ex)
             {
-                //MessageBox.Show(ex.Message, "Error");
                 ExceptionWindow window = new ExceptionWindow(ex.Message, 25);
                 window.ShowDialog();
             }
             catch (Exception ex)
             {
-                //_terminal.Text += NEW_LINE + e.Message;
                 ExceptionWindow window = new ExceptionWindow(ex.Message, 25);
                 window.ShowDialog();
             }
@@ -146,8 +149,8 @@ namespace Stand.UI.Controls
 
         public new void AddText(string text)
         {
-            this._terminal.Text += text;
-            this._terminal.ScrollToEnd();
+            _terminal.Text += text;
+            _terminal.ScrollToEnd();
         }
     }
 }

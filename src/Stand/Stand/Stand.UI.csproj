@@ -92,7 +92,7 @@
     <Compile Include="Entities\Task.cs" />
     <Compile Include="Exceptions\CommandNotMatchAssignment.cs" />
     <Compile Include="Infrastructure\EventArgs\CommandEventArgs.cs" />
-    <Compile Include="Infrastructure\DependencyContainer.cs" />
+    <Compile Include="Infrastructure\IoC.cs" />
     <Compile Include="Infrastructure\Events\CommandEventHandler.cs" />
     <Compile Include="Menu\MenuData.cs" />
     <Compile Include="Windows\DeviceWindow.xaml.cs">
