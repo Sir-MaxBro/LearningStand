@@ -19,10 +19,12 @@
                                Connect="Connect_ButtonClick"
                                Disconnect="Disconnect_ButtonClick">
         </Controls:SettingPanel>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Auto"
+                      IsEnabled="{Binding IsConnected}">
             <Controls:Terminal x:Name="terminal" 
-                               SendingCommandToExecute="Terminal_SendingCommandToExecute" 
-                               IsEnabled="True"/>
+                               SendingCommandToExecute="Terminal_SendingCommandToExecute"/>
         </ScrollViewer>
 
         <GridSplitter Grid.Column="1" Background="#f0f0f0" Width="2" VerticalAlignment="Stretch" 
@@ -32,7 +34,7 @@
         <Label Grid.Column="2" FontWeight="Bold" FontSize="16">
             Задание
         </Label>
-        
+
         <Controls:TaskPanel x:Name="taskPanel" 
                             Grid.Column="2" Grid.Row="1">
         </Controls:TaskPanel>
