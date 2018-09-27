@@ -12,8 +12,6 @@ namespace Stand.Domain.Abstract
 
         void ExecuteCommand(string command);
 
-        void TryPassword(string password);
-
         void SendAnswer(string message);
     }
 }

@@ -12,15 +12,15 @@ namespace Stand.Domain.Infractructure.Protocols
 {
     public class TelnetProtocol : IProtocol
     {
-        public event ReceivedEventHandler AnswerReceived;
-        private Client _telnetClient;
-        //private Parser _parser;
-        //private string _invitation;
+        private static Client _telnetClient;
 
-        public TelnetProtocol()
-        {
-            //_parser = new Parser(Properties.Resources.TelnetSwitchCommands);
-        }
+        private readonly object lockObject = new object();
+        private readonly TimeSpan TIME_OUT_WAITING_ANSWER = new TimeSpan(10000);
+        private readonly TimeSpan TIME_OUT_TICK = new TimeSpan(1000);
+
+        public event ReceivedEventHandler AnswerReceived;
+
+        public TelnetProtocol() { }
 
         public bool Connect(string host, int port)
         {
@@ -33,20 +33,9 @@ namespace Stand.Domain.Infractructure.Protocols
                 return false;
             }
 
-            this.GetAnswer();
+            this.WaitForAnswer();
 
             return _telnetClient.IsConnected;
-        }
-
-        public void TryPassword(string password)
-        {
-            if (_telnetClient != null && _telnetClient.IsConnected)
-            {
-                var bytes = Encoding.Default.GetBytes(password);
-                password = Encoding.ASCII.GetString(bytes);
-                _telnetClient.WriteLine(password);
-                this.GetAnswer(password);
-            }
         }
 
         public void Disconnect()
@@ -69,18 +58,10 @@ namespace Stand.Domain.Infractructure.Protocols
                 return;
             }
 
-            if (commandSplit[0].ToLower().Contains("password"))
-            {
-                this.TryPassword(currentCommand.Trim());
-            }
-            else
-            {
-                //_invitation = commandSplit[0];
-                this.ExecutingCommand(currentCommand.Trim());
-            }
+            this.SendCommandToDevice(currentCommand.Trim());
         }
 
-        private void ExecutingCommand(string command)
+        private void SendCommandToDevice(string command)
         {
             if (_telnetClient != null && _telnetClient.IsConnected)
             {
@@ -88,29 +69,36 @@ namespace Stand.Domain.Infractructure.Protocols
                 command = Encoding.ASCII.GetString(bytes);
 
                 _telnetClient.WriteLine(command);
-                this.GetAnswer(command);
+                this.WaitForAnswer(command);
+            }
+        }
+
+        private void WaitForAnswer(string command = "")
+        {
+            Thread answerThread = new Thread((objCommand) => this.GetAnswer((string)objCommand));
+            answerThread.Start(command);
+            if (!answerThread.Join(TIME_OUT_WAITING_ANSWER))
+            {
+                answerThread.Abort();
+                throw new TimeoutException("Timeout error.");
             }
         }
 
         private void GetAnswer(string command = "")
         {
-            string answer = string.Empty;
-            if (_telnetClient != null)
+            lock (lockObject)
             {
-                Thread.Sleep(100);
-                do
+                string answer = string.Empty;
+                if (_telnetClient != null)
                 {
-                    answer += _telnetClient.Read(new TimeSpan(1000));
-                } while (string.IsNullOrEmpty(answer) || answer == command);
+                    do
+                    {
+                        answer += _telnetClient.Read(TIME_OUT_TICK);
+                    } while (string.IsNullOrEmpty(answer) || answer == command);
+                }
+                answer = answer.TrimStart(command.ToCharArray());
+                this.SendAnswer(answer);
             }
-            else
-            {
-                answer = "\nСервер не отвечает.\n";
-            }
-
-            answer = answer.TrimStart(command.ToCharArray());
-
-            this.SendAnswer(answer);
         }
 
         public void SendAnswer(string message)

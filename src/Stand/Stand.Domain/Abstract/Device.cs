@@ -65,7 +65,7 @@ namespace Stand.Domain.Abstract
 
         public void TryPassword(string password)
         {
-            _protocol.TryPassword(password.Trim());
+            _protocol.ExecuteCommand(password.Trim());
         }
 
         public event ReceivedEventHandler AnswerReceived
