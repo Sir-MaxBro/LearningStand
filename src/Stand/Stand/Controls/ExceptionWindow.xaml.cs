@@ -18,20 +18,32 @@ namespace Stand.UI.Windows
 
         private DispatcherTimer _timer;
         private string _timeLeft;
+        private string _errorMessage;
         private int _timeLeftTime;
 
         public ExceptionWindow(string errorMessage, int seconds)
         {
-            this.ErrorMessage = errorMessage;
             _timeLeftTime = seconds;
-
             TimeLeft = this.GetTimeString(_timeLeftTime);
 
             InitializeComponent();
+
             this.DataContext = this;
+            this.ErrorMessage = errorMessage;
         }
 
-        public string ErrorMessage { get; set; }
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                if (_errorMessage != value)
+                {
+                    _errorMessage = value;
+                    OnPropertyChanged("ErrorMessage");
+                }
+            }
+        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -45,6 +57,11 @@ namespace Stand.UI.Windows
         private void TimeOuts(DispatcherTimer timer)
         {
             timer.Stop();
+            this.Close();
+        }
+
+        protected virtual void OnClose(object sender, RoutedEventArgs e)
+        {
             this.Close();
         }
 

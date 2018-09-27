@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Controls;
 using System.Xml.Linq;
 
@@ -94,10 +95,12 @@ namespace Stand.UI.Controls
             }
             else if (_compiler != null)
             {
-                var isCommandValid = _compiler.IsValid(command).IsValid;
-                if (!isCommandValid)
+                var validResult = _compiler.IsValid(command);
+                if (!validResult.IsValid)
                 {
-                    throw new CommandNotMatchAssignment("Команда не соответствует заданию");
+                    StringBuilder errorMessage = new StringBuilder("Команда не соответствует заданию.\n");
+                    errorMessage.AppendLine("Может вы имели ввиду: '" + validResult.MostSimilarCommand + "'");
+                    throw new CommandNotMatchAssignment(errorMessage.ToString());
                 }
             }
 

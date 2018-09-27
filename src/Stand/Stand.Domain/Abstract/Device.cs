@@ -58,7 +58,7 @@ namespace Stand.Domain.Abstract
             else
             {
                 StringBuilder answer = new StringBuilder("Команда не найдена\n");
-                answer.AppendLine("Может вы имели ввиду: " + validResult.MostSimilarCommand);
+                answer.AppendLine("Может вы имели ввиду: '" + validResult.MostSimilarCommand + "'");
                 throw new CommandNotFoundException(answer.ToString());
             }
         }
