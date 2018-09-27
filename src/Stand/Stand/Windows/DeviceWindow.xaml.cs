@@ -99,7 +99,7 @@ namespace Stand.UI.Windows
                     string errorMessage = "Не удалось установить подключение.";
                     MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                this.IsConnected = true;
+                this.IsConnected = isConnectedSuccess;
             }
         }
 
