@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using EditorXML.Domain.Abstract;
 
 namespace EditorXML.UserControls
 {
@@ -24,14 +25,15 @@ namespace EditorXML.UserControls
     {
      
         public event PropertyChangedEventHandler PropertyChanged;
+
         private readonly XDocument _xdocument;
         private List<NodeViewer> _commandCollection;
+        private IXmlService _xmlService = new XmlService();
         private XElement _element;
 
         public XElement Element
         {
             get { return _element; }
-           /* set { _element = value; }*/
         }
         public NodeViewer(XElement element):base()
         {
@@ -41,7 +43,6 @@ namespace EditorXML.UserControls
             var p =  element.Attributes();
             var t = p.FirstOrDefault(s => s.Name == "name");
             header.Text =t.Value;
-            descr.Text = element.Attributes().FirstOrDefault(s => s.Name == "description").Value;
 
         }
         public NodeViewer()
@@ -51,13 +52,11 @@ namespace EditorXML.UserControls
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void AddNodeButton_Click(object sender, RoutedEventArgs e)
         {
-            Random rnd = new Random();
-            //Expander expander = new Expander();
             XElement childElement = new XElement(_element);
                var t = new NodeViewer(childElement);
-                  stackPanel.Children.Add(t);
+                //  stackPanel.Children.Add(t);
                   _element.Add(childElement);
         }
 
@@ -73,11 +72,6 @@ namespace EditorXML.UserControls
             _element.Attributes().FirstOrDefault(s => s.Name == "name").Value = (sender as TextBox).Text;
         }
 
-        private void descr_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_element != null) 
-            _element.Attributes().FirstOrDefault(s => s.Name == "description").Value = (sender as TextBox).Text;
-        }
 
     }
 }

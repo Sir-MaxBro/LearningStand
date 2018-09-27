@@ -113,6 +113,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EditorXML.Domain\EditorXML.Domain.csproj">
+      <Project>{a84c986c-5d76-48fc-965e-6c5979ca2c3a}</Project>
+      <Name>EditorXML.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

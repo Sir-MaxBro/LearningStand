@@ -14,8 +14,8 @@
         </Grid.ColumnDefinitions>
         <Menu VerticalAlignment="Center" Grid.ColumnSpan="2" >
             <MenuItem Header="Файл">
-                <MenuItem Header="Новый" Click="MenuItem_new_Click"/>
-                <MenuItem Header="Открыть" Click="MenuItem_open_Click"/>
+                <MenuItem Header="Новый" Click="MenuItem_New_Click"/>
+                <MenuItem Header="Открыть" Click="MenuItem_Open_Click"/>
             </MenuItem>
             <MenuItem Header="Сохранить" Click="MenuItem_Click"/>
         </Menu>

@@ -14,46 +14,46 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" ></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                
-                <Expander IsExpanded="False" Grid.IsSharedSizeScope="True" >
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="1,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                        <GradientStop Color="White"/>
+                        <GradientStop Color="#FFA5BF6E" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                    <Expander IsExpanded="False" Grid.IsSharedSizeScope="True" >
                     <Expander.Header>
                         <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                        <TextBox Text="" MinWidth="100" x:Name="header" TextChanged="header_TextChanged"
+                            <TextBox Text="" MinWidth="100" x:Name="header" TextChanged="header_TextChanged"
                                  Template="{StaticResource TextBoxBaseControlTemplate}"/>
+                           
+                            
                             <Button VerticalAlignment="Center"
                                     HorizontalAlignment="Right"
                                     Height="30"
                                     Click="Button_Click_1" 
-                        Content="Удалить" Grid.Column="1"  Panel.ZIndex="1"
+                        Content="-" Grid.Column="0"  Panel.ZIndex="1"
                         Style="{StaticResource StandartButton}"
                         Background="{DynamicResource redGradient}"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource grayBrush}"
                         Margin="0"/>
-                        </Grid>
-                    </Expander.Header>
-
-                    <StackPanel Grid.Row="1" ScrollViewer.CanContentScroll="True"
-               x:Name="mainStack" >
-                        <TextBox Text="Description" x:Name="descr" TextChanged="descr_TextChanged"
-                                 TextWrapping="Wrap"
-                                 Template="{StaticResource TextBoxBaseControlTemplate}"/>
-                        <Button Height="30" Width="auto" HorizontalAlignment="Right" 
-                                Click="Button_Click" Content="Добавить"
+                            <Button Height="30" Width="auto" HorizontalAlignment="Right" 
+                                Click="AddNodeButton_Click" 
+                                    Content="edit"
+                                     Grid.Column="2"  Panel.ZIndex="1"
                                 Style="{StaticResource StandartButton}"
                                 Background="{DynamicResource greenGradient}"
                                 BorderThickness="1"
                                 BorderBrush="{DynamicResource grayBrush}"
                                 Margin="5"/>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"  >
-                            <StackPanel     x:Name="stackPanel"  Margin="20,0,0,0" ></StackPanel>
-                        </ScrollViewer>
-
-                    </StackPanel>
+                            
+                        </Grid>
+                    </Expander.Header>
                 </Expander>
             </Grid>
         </Border>
