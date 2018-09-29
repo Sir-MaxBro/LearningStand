@@ -14,16 +14,16 @@
         </Grid.ColumnDefinitions>
         <Menu VerticalAlignment="Center" Grid.ColumnSpan="2" >
             <MenuItem Header="Файл">
-                <MenuItem Header="Новый" Click="MenuItem_New_Click"/>
+                <MenuItem Header="Новый" Click="New_MenuItem_Click"/>
                 <MenuItem Header="Открыть" Click="MenuItem_Open_Click"/>
             </MenuItem>
-            <MenuItem Header="Сохранить" Click="MenuItem_Click"/>
+            <MenuItem Header="Сохранить" Click="Save_MenuItem_Click"/>
         </Menu>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <StackPanel >
                 <StackPanel x:Name="Container">
                 </StackPanel>
-                <Button Style="{StaticResource StandartButton}" Content="Добавить" Click="Button_Click"
+                <Button Style="{StaticResource StandartButton}" Content="Добавить" Click="AddElement_Button_Click"
                         Background="{DynamicResource greenGradient}"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource grayBrush}"

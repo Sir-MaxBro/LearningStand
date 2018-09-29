@@ -19,6 +19,8 @@ using System.Xml.Linq;
 using EditorXML.UserControls;
 using EditorXML.Domain;
 using EditorXML.Domain.Abstract;
+using EditorXML.Domain.Service;
+using System.Windows.Forms;
 
 namespace EditorXML
 {
@@ -41,56 +43,74 @@ namespace EditorXML
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void AddElement_Button_Click(object sender, RoutedEventArgs e)
         {
             XElement newXmlElement = _xmlService.GetDefaultElement();
             _document.Root.Add(newXmlElement);
             Container.Children.Add(new NodeViewer(newXmlElement));
+
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            FileStream f;
-            if (_path == null)
-            {
-                System.Windows.Forms.SaveFileDialog s = new System.Windows.Forms.SaveFileDialog();
-                s.Filter = EXTENSION_FILTER;
-                if (s.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    f = new FileStream(s.FileName, FileMode.Create);
-                    _path = s.FileName;
-                }
-                else
-                {
-                    return;
-                }
-            }
-            else
-            {
-                f = new FileStream(_path, FileMode.Create);
-            }
-
-            _document.Save(f);
-            f.Close();
-        }
-        //todo rename it
-        private void MenuItem_New_Click(object sender, RoutedEventArgs e)
+        private void New_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             _path = null;
             Container.Children.Clear();
             _document = _xmlService.GetDefaultDocument();
         }
 
+        private void Save_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_path == null)
+            {
+                SaveAs_MenuItem_Click(sender, e);
+            }
+            else
+            {
+                SaveInFile(_path);
+            }
+
+        }
+
+        private void SaveAs_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = EXTENSION_FILTER;
+
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                SaveInNewFilePath(saveFileDialog.FileName);
+            }
+        }
+
+        private void SaveInNewFilePath(String path)
+        {
+            SaveInFile(path);
+            _path = path;
+        }
+
+        private void SaveInFile()
+        {
+            SaveInFile(_path);
+        }
+
+        private void SaveInFile(String path)
+        {
+            FileStream fileToSave = new FileStream(path, FileMode.Create);
+
+            _document.Save(fileToSave);
+            fileToSave.Close();
+        }
+
         private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.OpenFileDialog f = new System.Windows.Forms.OpenFileDialog();
-            f.Filter = EXTENSION_FILTER;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = EXTENSION_FILTER;
 
-            if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 Container.Children.Clear();
-                _path = f.FileName;
-                _xmlService.ReadFile(_path);
+                _path = openFileDialog.FileName;
+                _document = _xmlService.ReadFile(_path);
                 ViewXml(_document);
             }
         }

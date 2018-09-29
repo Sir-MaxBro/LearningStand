@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using EditorXML.Domain.Abstract;
+using EditorXML.Domain.Service;
 
 namespace EditorXML.UserControls
 {
@@ -23,26 +24,24 @@ namespace EditorXML.UserControls
     /// </summary>
     public partial class NodeViewer : UserControl, INotifyPropertyChanged
     {
-     
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly XDocument _xdocument;
-        private List<NodeViewer> _commandCollection;
-        private IXmlService _xmlService = new XmlService();
         private XElement _element;
 
         public XElement Element
         {
             get { return _element; }
         }
-        public NodeViewer(XElement element):base()
+        public NodeViewer(XElement element)
+            : base()
         {
             InitializeComponent();
             this.DataContext = this;
             _element = element;
-            var p =  element.Attributes();
-            var t = p.FirstOrDefault(s => s.Name == "name");
-            header.Text =t.Value;
+
+            XAttribute nameAttribute = element.Attribute(XName.Get("name"));
+            header.Text = nameAttribute.Value;
 
         }
         public NodeViewer()
@@ -55,12 +54,12 @@ namespace EditorXML.UserControls
         private void AddNodeButton_Click(object sender, RoutedEventArgs e)
         {
             XElement childElement = new XElement(_element);
-               var t = new NodeViewer(childElement);
-                //  stackPanel.Children.Add(t);
-                  _element.Add(childElement);
+            var t = new NodeViewer(childElement);
+            //  stackPanel.Children.Add(t);
+            _element.Add(childElement);
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
             this.Content = null;
             _element.Remove();
@@ -68,8 +67,8 @@ namespace EditorXML.UserControls
 
         private void header_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (_element != null) 
-            _element.Attributes().FirstOrDefault(s => s.Name == "name").Value = (sender as TextBox).Text;
+            XAttribute nameAttribute = _element.Attribute(XName.Get("name"));
+            nameAttribute.Value = (sender as TextBox).Text;
         }
 
 

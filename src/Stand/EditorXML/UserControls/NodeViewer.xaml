@@ -35,7 +35,7 @@
                             <Button VerticalAlignment="Center"
                                     HorizontalAlignment="Right"
                                     Height="30"
-                                    Click="Button_Click_1" 
+                                    Click="RemoveButton_Click" 
                         Content="-" Grid.Column="0"  Panel.ZIndex="1"
                         Style="{StaticResource StandartButton}"
                         Background="{DynamicResource redGradient}"
