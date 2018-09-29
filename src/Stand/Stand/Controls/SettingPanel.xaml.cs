@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Stand.Domain.Extensions;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,9 +10,11 @@ namespace Stand.UI.Controls
     /// </summary>
     public partial class SettingPanel : UserControl, INotifyPropertyChanged
     {
-        private string _ipAddress = "10.203.0.3";
+        private readonly char[] allowedCharacters = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.' };
+        private string _ipAddress;
         private int _port;
         private bool _isPortValid;
+        private bool _isIPValid;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event RoutedEventHandler Connect;
@@ -22,11 +25,12 @@ namespace Stand.UI.Controls
             InitializeComponent();
             this.DataContext = this;
             this.Port = 23;
+            this.IPAddress = "10.203.0.3";
         }
 
         public bool CanConnect
         {
-            get { return _isPortValid; }
+            get { return _isPortValid && _isIPValid; }
         }
 
         public bool CanDisconnect
@@ -37,7 +41,14 @@ namespace Stand.UI.Controls
         public string IPAddress
         {
             get { return _ipAddress; }
-            set { _ipAddress = value; }
+            set
+            {
+                if (_ipAddress != value)
+                {
+                    _ipAddress = value;
+                    OnPropertyChanged("IPAddress");
+                }
+            }
         }
 
         public int Port
@@ -83,8 +94,22 @@ namespace Stand.UI.Controls
         protected virtual void OnPortChanged(object sender, TextChangedEventArgs e)
         {
             var text = (sender as TextBox)?.Text;
-            int result;
-            _isPortValid = int.TryParse(text, out result);
+            _isPortValid = int.TryParse(text, out int result);
+            RefreshConnectEnable();
+        }
+
+        private void OnIPChanged(object sender, TextChangedEventArgs e)
+        {
+            _isIPValid = false;
+            var text = (sender as TextBox)?.Text;
+            if (!string.IsNullOrEmpty(text))
+            {
+                var textWithoutAllowed = text?.Except(allowedCharacters);
+                if (string.IsNullOrEmpty(textWithoutAllowed))
+                {
+                    _isIPValid = true;
+                }
+            }
             RefreshConnectEnable();
         }
 
