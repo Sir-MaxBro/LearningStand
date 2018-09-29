@@ -24,14 +24,16 @@
                HorizontalContentAlignment="Right"
                FontWeight="Bold">Port</Label>
         <TextBox Grid.Column="3" 
-                 Text="{Binding Port}"
-                 Template="{StaticResource TextBoxBaseControlTemplate}"></TextBox>
+                 Text="{Binding Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Template="{StaticResource TextBoxBaseControlTemplate}"
+                 TextChanged="OnPortChanged"></TextBox>
         <Button Style="{StaticResource StandartButton}" 
                 Grid.Column="4" 
                 Click="Connect_ButtonClick"
                 Background="{DynamicResource greenGradient}"
                 BorderThickness="1"
                 BorderBrush="{DynamicResource grayBrush}"
+                IsEnabled="{Binding CanConnect, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 Margin="5, 10, 5, 10">Connect</Button>
         <Button Style="{StaticResource StandartButton}" 
                 Grid.Column="5" 
@@ -39,6 +41,7 @@
                 Background="{DynamicResource redGradient}"
                 BorderThickness="1"
                 BorderBrush="{DynamicResource grayBrush}"
+                IsEnabled="{Binding CanDisconnect, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 Margin="5, 10, 5, 10">Disconnect</Button>
     </Grid>
 </UserControl>
