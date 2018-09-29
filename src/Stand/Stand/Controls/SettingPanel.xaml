@@ -18,8 +18,9 @@
                HorizontalContentAlignment="Right"
                FontWeight="Bold">IP</Label>
         <TextBox Grid.Column="1" 
-                 Text="{Binding IPAddress}"
-                 Template="{StaticResource TextBoxBaseControlTemplate}"></TextBox>
+                 Text="{Binding IPAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Template="{StaticResource TextBoxBaseControlTemplate}"
+                 TextChanged="OnIPChanged"></TextBox>
         <Label Grid.Column="2"
                HorizontalContentAlignment="Right"
                FontWeight="Bold">Port</Label>
