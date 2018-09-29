@@ -1,11 +1,11 @@
 ﻿using Stand.Domain.Abstract;
 using Stand.Domain.Exceptions;
+using Stand.Domain.Extensions;
 using Stand.UI.Exceptions;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Controls;
 using System.Xml.Linq;
 
@@ -65,7 +65,7 @@ namespace Stand.UI.Controls
             get { return _currentTask; }
         }
 
-        protected void CurrentTaskComplete()
+        protected void SetCurrentTaskComplete()
         {
             _currentTask.IsDone = true;
             _currentTask.IsCurrent = false;
@@ -79,32 +79,33 @@ namespace Stand.UI.Controls
 
         public bool CheckTask(string command)
         {
-            bool checkCommand = false;
-
             if (_currentTask == null)
             {
                 throw new EmptyTaskCommandsException("Задание не выбрано.");
             }
 
-            command = command.Remove(0, command.IndexOf('#') + 1);
-            if (_currentTask.RightTaskCommand.ToLower() == command.Trim().ToLower())
+            command = command.GetAfter('#');
+            var isRightCommand = (_currentTask.RightTaskCommand.ToLower() == command.Trim().ToLower());
+            if (!isRightCommand)
             {
-                checkCommand = true;
-                this.CurrentTaskComplete();
-                this.NextCurrent();
-            }
-            else if (_compiler != null)
-            {
-                var validResult = _compiler.IsValid(command);
-                if (!validResult.IsValid)
+                string errorMessage = "Команда не соответствует заданию.\n";
+                if (_compiler != null)
                 {
-                    StringBuilder errorMessage = new StringBuilder("Команда не соответствует заданию.\n");
-                    errorMessage.AppendLine("Может вы имели ввиду: '" + validResult.MostSimilarCommand + "'");
-                    throw new CommandNotMatchAssignment(errorMessage.ToString());
+                    var validResult = _compiler.IsValid(command);
+                    var mostSimilarCommand = validResult.MostSimilarCommand.Trim();
+
+                    if (!validResult.IsValid && !string.IsNullOrEmpty(mostSimilarCommand))
+                    {
+                        errorMessage += string.Format("Может вы имели ввиду: '{0}'", validResult.MostSimilarCommand);
+                    }
                 }
+                throw new CommandNotMatchAssignment(errorMessage);
             }
 
-            return checkCommand;
+            this.SetCurrentTaskComplete();
+            this.MoveNext();
+
+            return true;
         }
 
         private void Labs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -145,10 +146,10 @@ namespace Stand.UI.Controls
             }
 
             taskStackPanel.Items.Refresh();
-            this.NextCurrent();
+            this.MoveNext();
         }
 
-        private void NextCurrent()
+        private void MoveNext()
         {
             _currentIndex++;
             if (_tasks.Count > _currentIndex)

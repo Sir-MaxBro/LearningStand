@@ -1,8 +1,8 @@
 ﻿using Stand.Domain.Abstract;
 using Stand.Domain.Exceptions;
 using Stand.Domain.Infractructure.EventArgs;
+using Stand.UI.Exceptions;
 using Stand.UI.Infrastructure.EventArgs;
-using System;
 using System.ComponentModel;
 using System.Windows;
 
@@ -82,7 +82,7 @@ namespace Stand.UI.Windows
             {
                 throw ex;
             }
-            catch (Exception ex)
+            catch (CommandNotMatchAssignment ex)
             {
                 throw ex;
             }
@@ -96,8 +96,8 @@ namespace Stand.UI.Windows
 
                 if (!isConnectedSuccess)
                 {
-                    string errorMessage = "Не удалось установить подключение.";
-                    MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                   string errorMessage = "Не удалось установить подключение.";
+                   MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 this.IsConnected = isConnectedSuccess;
             }

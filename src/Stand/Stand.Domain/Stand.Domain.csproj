@@ -54,6 +54,7 @@
     <Compile Include="Abstract\IProtocol.cs" />
     <Compile Include="Exceptions\CommandNotFoundException.cs" />
     <Compile Include="Exceptions\EmptyTaskCommandsException.cs" />
+    <Compile Include="Extensions\CommandExtension.cs" />
     <Compile Include="Infractructure\Compilers\SwitchCompiler.cs" />
     <Compile Include="Infractructure\Devices\SwitchDevice.cs" />
     <Compile Include="Infractructure\Protocols\TelnetProtocol.cs" />
