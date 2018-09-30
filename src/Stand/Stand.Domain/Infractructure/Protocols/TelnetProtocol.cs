@@ -15,7 +15,6 @@ namespace Stand.Domain.Infractructure.Protocols
     {
         private static Client _telnetClient;
 
-        private readonly object lockObject = new object();
         private readonly TimeSpan _timeOutWaitingAnswer;
         private readonly TimeSpan TIME_OUT_TICK = new TimeSpan(1000);
 
@@ -32,7 +31,7 @@ namespace Stand.Domain.Infractructure.Protocols
         {
             try
             {
-                _telnetClient = new Client(host, port);
+                _telnetClient = new Client(host, port, CancellationToken.None);
             }
             catch (SocketException ex)
             {
@@ -90,21 +89,18 @@ namespace Stand.Domain.Infractructure.Protocols
             }
         }
 
-        private void GetAnswer(string command = "")
+        private async void GetAnswer(string command = "")
         {
-            lock (lockObject)
+            string answer = string.Empty;
+            if (_telnetClient != null)
             {
-                string answer = string.Empty;
-                if (_telnetClient != null)
+                do
                 {
-                    do
-                    {
-                        answer += _telnetClient.Read(TIME_OUT_TICK);
-                    } while (string.IsNullOrEmpty(answer) || answer == command);
-                }
-                answer = answer.TrimStart(command.ToCharArray());
-                this.SendAnswer(answer);
+                    answer += await _telnetClient.ReadAsync(TIME_OUT_TICK);
+                } while (string.IsNullOrEmpty(answer) || answer == command);
             }
+            answer = answer.TrimStart(command.ToCharArray());
+            this.SendAnswer(answer);
         }
 
         public void SendAnswer(string message)

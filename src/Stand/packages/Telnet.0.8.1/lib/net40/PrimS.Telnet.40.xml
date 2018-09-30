@@ -1,106 +1,9 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>PrimS.Telnet.35</name>
+        <name>PrimS.Telnet.40</name>
     </assembly>
     <members>
-        <member name="T:PrimS.Telnet.Client">
-            <summary>
-            Basic Telnet client.
-            </summary>
-            <summary>
-            Basic Telnet client.
-            </summary>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TryLogin(System.String,System.String,System.Int32)">
-            <summary>
-            Tries to login.
-            </summary>
-            <param name="userName">The user name.</param>
-            <param name="password">The password.</param>
-            <param name="loginTimeOutMs">The login time out ms.</param>
-            <returns>True if successful.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.WriteLine(System.String)">
-            <summary>
-            Writes the line to the server.
-            </summary>
-            <param name="command">The command.</param>
-        </member>
-        <member name="M:PrimS.Telnet.Client.Write(System.String)">
-            <summary>
-            Writes the specified command to the server.
-            </summary>
-            <param name="command">The command.</param>
-        </member>
-        <member name="M:PrimS.Telnet.Client.Read">
-            <summary>
-            Reads asynchronously from the stream.
-            </summary>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.String)">
-            <summary>
-            Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-            </summary>
-            <param name="terminator">The terminator.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.Text.RegularExpressions.Regex)">
-            <summary>
-            Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
-            </summary>
-            <param name="regex">The regex to match.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.String,System.TimeSpan)">
-            <summary>
-            Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-            </summary>
-            <param name="terminator">The terminator.</param>
-            <param name="timeout">The timeout.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.Text.RegularExpressions.Regex,System.TimeSpan)">
-            <summary>
-            Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-            </summary>
-            <param name="regex">The terminator.</param>
-            <param name="timeout">The timeout.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.String,System.TimeSpan,System.Int32)">
-            <summary>
-            Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-            </summary>
-            <param name="terminator">The terminator.</param>
-            <param name="timeout">The maximum time to wait.</param>
-            <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.Text.RegularExpressions.Regex,System.TimeSpan,System.Int32)">
-            <summary>
-            Reads synchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
-            </summary>
-            <param name="regex">The regex to match.</param>
-            <param name="timeout">The maximum time to wait.</param>
-            <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.#ctor(System.String,System.Int32)">
-            <summary>
-            Initialises a new instance of the <see cref="T:PrimS.Telnet.Client"/> class.
-            </summary>
-            <param name="hostname">The hostname.</param>
-            <param name="port">The port.</param>
-        </member>
-        <member name="M:PrimS.Telnet.Client.Read(System.TimeSpan)">
-            <summary>
-            Reads from the stream.
-            </summary>
-            <param name="timeout">The timeout.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
         <member name="T:PrimS.Telnet.BaseClient">
             <summary>
             The base class for Clients.
@@ -153,11 +56,32 @@
             <param name="s">The content to search for the <paramref name="regex"/>.</param>
             <returns>True if the Regex is matched, otherwise false.</returns>
         </member>
-        <member name="M:PrimS.Telnet.BaseClient.#ctor(PrimS.Telnet.IByteStream)">
+        <member name="F:PrimS.Telnet.BaseClient.sendRateLimit">
+            <summary>
+            The send rate limit.
+            </summary>
+        </member>
+        <member name="F:PrimS.Telnet.BaseClient.internalCancellation">
+            <summary>
+            The internal cancellation token.
+            </summary>
+        </member>
+        <member name="M:PrimS.Telnet.BaseClient.#ctor(PrimS.Telnet.IByteStream,System.Threading.CancellationToken)">
             <summary>
             Initialises a new instance of the <see cref="T:PrimS.Telnet.BaseClient"/> class.
             </summary>
             <param name="byteStream">The byte stream.</param>
+            <param name="token">The token.</param>
+        </member>
+        <member name="P:PrimS.Telnet.BaseClient.SendRateLimit">
+            <summary>
+            Gets the send rate limit.
+            </summary>
+        </member>
+        <member name="P:PrimS.Telnet.BaseClient.InternalCancellation">
+            <summary>
+            Gets the internal cancellation token.
+            </summary>
         </member>
         <member name="M:PrimS.Telnet.BaseClient.Dispose(System.Boolean)">
             <summary>
@@ -184,17 +108,18 @@
             </summary>
             <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         </member>
-        <member name="M:PrimS.Telnet.ByteStreamHandler.#ctor(PrimS.Telnet.IByteStream)">
+        <member name="M:PrimS.Telnet.ByteStreamHandler.#ctor(PrimS.Telnet.IByteStream,System.Threading.CancellationTokenSource)">
             <summary>
             Initialises a new instance of the <see cref="T:PrimS.Telnet.ByteStreamHandler"/> class.
             </summary>
             <param name="byteStream">The byteStream to handle.</param>
+            <param name="internalCancellation">A cancellation token.</param>
         </member>
         <member name="M:PrimS.Telnet.ByteStreamHandler.Read(System.TimeSpan)">
             <summary>
             Reads from the stream.
             </summary>
-            <param name="timeout">The timeout.</param>
+            <param name="timeout">The rolling timeout to wait for no further response from stream.</param>
             <returns>Any text read from the stream.</returns>
         </member>
         <member name="T:PrimS.Telnet.IByteStream">
@@ -467,7 +392,7 @@
             <summary>
             Writes the specified command to the stream.
             </summary>
-            <param name="command">The command.</param>
+            <param name="value">The command.</param>
         </member>
         <member name="M:PrimS.Telnet.TcpByteStream.Close">
             <summary>
@@ -538,6 +463,106 @@
             <returns>
             Network stream socket connected to.
             </returns>
+        </member>
+        <member name="T:PrimS.Telnet.Client">
+            <inheritdoc />
+            <summary>
+            Basic Telnet client.
+            </summary>
+            <summary>
+            Basic Telnet client.
+            </summary>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TryLogin(System.String,System.String,System.Int32,System.String)">
+            <summary>
+            Tries to login.
+            </summary>
+            <param name="userName">The user name.</param>
+            <param name="password">The password.</param>
+            <param name="loginTimeOutMs">The login time out ms.</param>
+            <param name="terminator">The terminator.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.WriteLine(System.String)">
+            <summary>
+            Writes the line to the server.
+            </summary>
+            <param name="command">The command.</param>
+        </member>
+        <member name="M:PrimS.Telnet.Client.Write(System.String)">
+            <summary>
+            Writes the specified command to the server.
+            </summary>
+            <param name="command">The command.</param>
+        </member>
+        <member name="M:PrimS.Telnet.Client.Read">
+            <summary>
+            Reads asynchronously from the stream.
+            </summary>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.String)">
+            <summary>
+            Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+            </summary>
+            <param name="terminator">The terminator.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.Text.RegularExpressions.Regex)">
+            <summary>
+            Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
+            </summary>
+            <param name="regex">The regex to match.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.String,System.TimeSpan)">
+            <summary>
+            Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+            </summary>
+            <param name="terminator">The terminator.</param>
+            <param name="timeout">The timeout.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.Text.RegularExpressions.Regex,System.TimeSpan)">
+            <summary>
+            Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+            </summary>
+            <param name="regex">The terminator.</param>
+            <param name="timeout">The timeout.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.String,System.TimeSpan,System.Int32)">
+            <summary>
+            Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+            </summary>
+            <param name="terminator">The terminator.</param>
+            <param name="timeout">The maximum time to wait.</param>
+            <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.Text.RegularExpressions.Regex,System.TimeSpan,System.Int32)">
+            <summary>
+            Reads synchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
+            </summary>
+            <param name="regex">The regex to match.</param>
+            <param name="timeout">The maximum time to wait.</param>
+            <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.#ctor(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Initialises a new instance of the <see cref="T:PrimS.Telnet.Client"/> class.
+            </summary>
+            <param name="hostname">The hostname.</param>
+            <param name="port">The port.</param>
+            <param name="token">The cancellation token.</param>
+        </member>
+        <member name="M:PrimS.Telnet.Client.Read(System.TimeSpan)">
+            <summary>
+            Reads from the stream.
+            </summary>
+            <param name="timeout">The timeout.</param>
+            <returns>Any text read from the stream.</returns>
         </member>
     </members>
 </doc>

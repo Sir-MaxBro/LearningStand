@@ -66,5 +66,11 @@ namespace Stand.UI
             var settingsWindow = new SettingsWindow();
             settingsWindow.ShowDialog();
         }
+
+        protected virtual void OnHelpOpen(object sender, RoutedEventArgs e)
+        {
+            var helpWindow = new HelpWindow();
+            helpWindow.Show();
+        }
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>PrimS.Telnet.40</name>
+        <name>PrimS.Telnet</name>
     </assembly>
     <members>
         <member name="T:PrimS.Telnet.BaseClient">
@@ -115,11 +115,126 @@
             <param name="byteStream">The byteStream to handle.</param>
             <param name="internalCancellation">A cancellation token.</param>
         </member>
-        <member name="M:PrimS.Telnet.ByteStreamHandler.Read(System.TimeSpan)">
+        <member name="M:PrimS.Telnet.ByteStreamHandler.ReadAsync(System.TimeSpan)">
             <summary>
-            Reads from the stream.
+            Reads asynchronously from the stream.
             </summary>
             <param name="timeout">The rolling timeout to wait for no further response from stream.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="T:PrimS.Telnet.Client">
+            <summary>
+            Basic Telnet client.
+            </summary>
+        </member>
+        <member name="M:PrimS.Telnet.Client.#ctor(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Initialises a new instance of the <see cref="T:PrimS.Telnet.Client"/> class.
+            </summary>
+            <param name="hostName">The hostname to connect to.</param>
+            <param name="port">The port to connect to.</param>
+            <param name="token">The cancellation token.</param>
+        </member>
+        <member name="M:PrimS.Telnet.Client.#ctor(PrimS.Telnet.IByteStream,System.Threading.CancellationToken)">
+            <summary>
+            Initialises a new instance of the <see cref="T:PrimS.Telnet.Client"/> class.
+            </summary>
+            <param name="byteStream">The stream served by the host connected to.</param>
+            <param name="token">The cancellation token.</param>
+        </member>
+        <member name="M:PrimS.Telnet.Client.#ctor(PrimS.Telnet.IByteStream,System.Threading.CancellationToken,System.TimeSpan)">
+            <summary>
+            Initialises a new instance of the <see cref="T:PrimS.Telnet.Client"/> class.
+            </summary>
+            <param name="byteStream">The stream served by the host connected to.</param>
+            <param name="token">The cancellation token.</param>
+            <param name="timeout">The timeout to wait for initial successful connection to <cref>byteStream</cref>.</param>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TryLoginAsync(System.String,System.String,System.Int32)">
+            <summary>
+            Tries to login asynchronously, passing in a default LineTerminator of ">".
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+            <param name="loginTimeoutMs">The login time out ms.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TryLoginAsync(System.String,System.String,System.Int32,System.String)">
+            <summary>
+            Tries to login asynchronously.
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+            <param name="loginTimeoutMs">The login time out ms.</param>
+            <param name="terminator">The terminator.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.WriteLine(System.String)">
+            <summary>
+            Writes the line to the server.
+            </summary>
+            <param name="command">The command.</param>
+            <returns>An awaitable Task.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.Write(System.String)">
+            <summary>
+            Writes the specified command to the server.
+            </summary>
+            <param name="command">The command.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedReadAsync(System.String)">
+            <summary>
+            Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+            </summary>
+            <param name="terminator">The terminator.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedReadAsync(System.String,System.TimeSpan)">
+            <summary>
+            Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+            </summary>
+            <param name="terminator">The terminator.</param>
+            <param name="timeout">The timeout.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedReadAsync(System.Text.RegularExpressions.Regex,System.TimeSpan)">
+            <summary>
+            Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+            </summary>
+            <param name="regex">The terminator.</param>
+            <param name="timeout">The timeout.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedReadAsync(System.String,System.TimeSpan,System.Int32)">
+            <summary>
+            Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
+            </summary>
+            <param name="terminator">The terminator.</param>
+            <param name="timeout">The maximum time to wait.</param>
+            <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TerminatedReadAsync(System.Text.RegularExpressions.Regex,System.TimeSpan,System.Int32)">
+            <summary>
+            Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
+            </summary>
+            <param name="regex">The regex to match.</param>
+            <param name="timeout">The maximum time to wait.</param>
+            <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.ReadAsync">
+            <summary>
+            Reads asynchronously from the stream.
+            </summary>
+            <returns>Any text read from the stream.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.ReadAsync(System.TimeSpan)">
+            <summary>
+            Reads asynchronously from the stream.
+            </summary>
+            <param name="timeout">The timeout.</param>
             <returns>Any text read from the stream.</returns>
         </member>
         <member name="T:PrimS.Telnet.IByteStream">
@@ -175,40 +290,45 @@
             <exception cref="T:System.NotSupportedException">The stream does not support writing, or the stream is already closed.</exception>
             <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed.</exception>
         </member>
-        <member name="M:PrimS.Telnet.IByteStream.Write(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:PrimS.Telnet.IByteStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
-            Writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written.
+            Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
             </summary>
             <param name="buffer">The buffer to write data from.</param>
             <param name="offset">The zero-based byte offset in buffer from which to begin copying bytes to the stream.</param>
             <param name="count">The maximum number of bytes to write.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+            <returns>A task that represents the asynchronous write operation.</returns>
             <exception cref="T:System.ArgumentNullException">The buffer parameter is null.</exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">The offset parameter is less than 0.-or- The offset parameter is greater than the length of buffer.-or- The size parameter is less than 0.-or- The size parameter is greater than the length of buffer minus the value of the offset parameter.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">The offset or count is negative.</exception>
+            <exception cref="T:System.ArgumentException">The offset parameter is less than 0.-or- The offset parameter is greater than the length of buffer.-or- The size parameter is less than 0.-or- The size parameter is greater than the length of buffer minus the value of the offset parameter.</exception>
+            <exception cref="T:System.NotSupportedException">The stream does not support writing.</exception>
             <exception cref="T:System.ObjectDisposedException">The stream has been disposed.</exception>
-            <exception cref="T:System.IO.IOException">There was a failure while writing to the network. -or-An error occurred when accessing the socket. See the Remarks section for more information.</exception>
-            <exception cref="T:System.ObjectDisposedException">The System.Net.Sockets.NetworkStream is closed.-or- There was a failure reading from the network.</exception>
+            <exception cref="T:System.InvalidOperationException">The stream is currently in use by a previous write operation.</exception>
         </member>
-        <member name="M:PrimS.Telnet.IByteStream.Write(System.String)">
+        <member name="M:PrimS.Telnet.IByteStream.WriteAsync(System.String,System.Threading.CancellationToken)">
             <summary>
-            Writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written.
+            Asynchronously writes a string to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
             </summary>
             <param name="value">The string to write.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+            <returns>A task that represents the asynchronous write operation.</returns>
             <exception cref="T:System.ArgumentNullException">The buffer parameter is null.</exception>
+            <exception cref="T:System.NotSupportedException">The stream does not support writing.</exception>
             <exception cref="T:System.ObjectDisposedException">The stream has been disposed.</exception>
-            <exception cref="T:System.IO.IOException">There was a failure while writing to the network. -or-An error occurred when accessing the socket. See the Remarks section for more information.</exception>
-            <exception cref="T:System.ObjectDisposedException">The System.Net.Sockets.NetworkStream is closed.-or- There was a failure reading from the network.</exception>
+            <exception cref="T:System.InvalidOperationException">The stream is currently in use by a previous write operation.</exception>
         </member>
         <member name="T:PrimS.Telnet.IByteStreamHandler">
             <summary>
             Contract of core functionality required to interact with a ByteStream.
             </summary>
         </member>
-        <member name="M:PrimS.Telnet.IByteStreamHandler.Read(System.TimeSpan)">
+        <member name="M:PrimS.Telnet.IByteStreamHandler.ReadAsync(System.TimeSpan)">
             <summary>
             Reads for up to the specified timeout.
             </summary>
             <param name="timeout">The timeout.</param>
-            <returns>Any text read from the stream.</returns>
+            <returns>A task representing the asynchronous read action.</returns>
         </member>
         <member name="T:PrimS.Telnet.INetworkStream">
             <summary>
@@ -227,13 +347,15 @@
             </summary>
             <param name="value">The value to write.</param>
         </member>
-        <member name="M:PrimS.Telnet.INetworkStream.Write(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:PrimS.Telnet.INetworkStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Writes the specified buffer.
             </summary>
             <param name="buffer">The buffer.</param>
             <param name="offset">The offset.</param>
-            <param name="size">The size.</param>
+            <param name="count">The count.</param>
+            <param name="cancellationToken">The cancellationToken.</param>
+            <returns>An awaitable task.</returns>
         </member>
         <member name="T:PrimS.Telnet.IsNotDeadCodeAttribute">
             <summary>
@@ -305,13 +427,17 @@
             </summary>
             <param name="value">The value to write.</param>
         </member>
-        <member name="M:PrimS.Telnet.NetworkStream.Write(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:PrimS.Telnet.NetworkStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Writes the specified buffer.
             </summary>
             <param name="buffer">The buffer.</param>
             <param name="offset">The offset.</param>
-            <param name="size">The size.</param>
+            <param name="count">The count.</param>
+            <param name="cancellationToken">The cancellationToken.</param>
+            <returns>
+            An awaitable task.
+            </returns>
         </member>
         <member name="M:PrimS.Telnet.NetworkStream.Dispose">
             <summary>
@@ -380,19 +506,25 @@
             </summary>
             <param name="value">The byte to write to the stream.</param>
         </member>
-        <member name="M:PrimS.Telnet.TcpByteStream.Write(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:PrimS.Telnet.TcpByteStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
-            Writes the specified buffer.
+            Asynchronously writes a sequence of bytes to the current stream, advances the current position within this stream by the number of bytes written, and monitors cancellation requests.
             </summary>
-            <param name="buffer">The buffer.</param>
-            <param name="offset">The offset.</param>
-            <param name="count">The count.</param>
+            <param name="buffer">The buffer to write data from.</param>
+            <param name="offset">The zero-based byte offset in buffer from which to begin copying bytes to the stream.</param>
+            <param name="count">The maximum number of bytes to write.</param>
+            <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+            <returns>
+            A task that represents the asynchronous write operation.
+            </returns>
         </member>
-        <member name="M:PrimS.Telnet.TcpByteStream.Write(System.String)">
+        <member name="M:PrimS.Telnet.TcpByteStream.WriteAsync(System.String,System.Threading.CancellationToken)">
             <summary>
-            Writes the specified command to the stream.
+            Asynchronously writes the specified value to the stream.
             </summary>
-            <param name="command">The command.</param>
+            <param name="value">The value.</param> 
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A task representing the asynchronous action.</returns>
         </member>
         <member name="M:PrimS.Telnet.TcpByteStream.Close">
             <summary>
@@ -463,104 +595,6 @@
             <returns>
             Network stream socket connected to.
             </returns>
-        </member>
-        <member name="T:PrimS.Telnet.Client">
-            <summary>
-            Basic Telnet client.
-            </summary>
-            <summary>
-            Basic Telnet client.
-            </summary>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TryLogin(System.String,System.String,System.Int32)">
-            <summary>
-            Tries to login.
-            </summary>
-            <param name="userName">The user name.</param>
-            <param name="password">The password.</param>
-            <param name="loginTimeOutMs">The login time out ms.</param>
-            <returns>True if successful.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.WriteLine(System.String)">
-            <summary>
-            Writes the line to the server.
-            </summary>
-            <param name="command">The command.</param>
-        </member>
-        <member name="M:PrimS.Telnet.Client.Write(System.String)">
-            <summary>
-            Writes the specified command to the server.
-            </summary>
-            <param name="command">The command.</param>
-        </member>
-        <member name="M:PrimS.Telnet.Client.Read">
-            <summary>
-            Reads asynchronously from the stream.
-            </summary>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.String)">
-            <summary>
-            Reads asynchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-            </summary>
-            <param name="terminator">The terminator.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.Text.RegularExpressions.Regex)">
-            <summary>
-            Reads asynchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
-            </summary>
-            <param name="regex">The regex to match.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.String,System.TimeSpan)">
-            <summary>
-            Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-            </summary>
-            <param name="terminator">The terminator.</param>
-            <param name="timeout">The timeout.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.Text.RegularExpressions.Regex,System.TimeSpan)">
-            <summary>
-            Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-            </summary>
-            <param name="regex">The terminator.</param>
-            <param name="timeout">The timeout.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.String,System.TimeSpan,System.Int32)">
-            <summary>
-            Reads synchronously from the stream, terminating as soon as the <paramref name="terminator"/> is located.
-            </summary>
-            <param name="terminator">The terminator.</param>
-            <param name="timeout">The maximum time to wait.</param>
-            <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.TerminatedRead(System.Text.RegularExpressions.Regex,System.TimeSpan,System.Int32)">
-            <summary>
-            Reads synchronously from the stream, terminating as soon as the <paramref name="regex"/> is matched.
-            </summary>
-            <param name="regex">The regex to match.</param>
-            <param name="timeout">The maximum time to wait.</param>
-            <param name="millisecondSpin">The millisecond spin between each read from the stream.</param>
-            <returns>Any text read from the stream.</returns>
-        </member>
-        <member name="M:PrimS.Telnet.Client.#ctor(System.String,System.Int32,System.Threading.CancellationToken)">
-            <summary>
-            Initialises a new instance of the <see cref="T:PrimS.Telnet.Client"/> class.
-            </summary>
-            <param name="hostname">The hostname.</param>
-            <param name="port">The port.</param>
-            <param name="token">The cancellation token.</param>
-        </member>
-        <member name="M:PrimS.Telnet.Client.Read(System.TimeSpan)">
-            <summary>
-            Reads from the stream.
-            </summary>
-            <param name="timeout">The timeout.</param>
-            <returns>Any text read from the stream.</returns>
         </member>
     </members>
 </doc>

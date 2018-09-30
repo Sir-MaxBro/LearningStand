@@ -15,7 +15,8 @@
             <MenuItem Header="Лабораторные работы"
                       Click="OnClick_Menu" 
                       x:Name="labsMenuItem"></MenuItem>
-            <MenuItem Header="Справка"></MenuItem>
+            <MenuItem Header="Справка"
+                      Click="OnHelpOpen"></MenuItem>
             <MenuItem Header="Настройки"
                       Click="OnSettingsOpen"></MenuItem>
         </Menu>

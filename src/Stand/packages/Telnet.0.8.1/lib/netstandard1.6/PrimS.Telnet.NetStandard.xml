@@ -152,11 +152,21 @@
         </member>
         <member name="M:PrimS.Telnet.Client.TryLoginAsync(System.String,System.String,System.Int32)">
             <summary>
+            Tries to login asynchronously, passing in a default LineTerminator of ">".
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+            <param name="loginTimeoutMs">The login time out ms.</param>
+            <returns>True if successful.</returns>
+        </member>
+        <member name="M:PrimS.Telnet.Client.TryLoginAsync(System.String,System.String,System.Int32,System.String)">
+            <summary>
             Tries to login asynchronously.
             </summary>
             <param name="username">The username.</param>
             <param name="password">The password.</param>
             <param name="loginTimeoutMs">The login time out ms.</param>
+            <param name="terminator">The terminator.</param>
             <returns>True if successful.</returns>
         </member>
         <member name="M:PrimS.Telnet.Client.WriteLine(System.String)">
@@ -510,9 +520,9 @@
         </member>
         <member name="M:PrimS.Telnet.TcpByteStream.WriteAsync(System.String,System.Threading.CancellationToken)">
             <summary>
-            Asynchronously writes the specified command to the stream.
+            Asynchronously writes the specified value to the stream.
             </summary>
-            <param name="command">The command.</param> 
+            <param name="value">The value.</param> 
             <param name="cancellationToken">The cancellation token.</param>
             <returns>A task representing the asynchronous action.</returns>
         </member>
