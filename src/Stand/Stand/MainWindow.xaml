@@ -16,6 +16,8 @@
                       Click="OnClick_Menu" 
                       x:Name="labsMenuItem"></MenuItem>
             <MenuItem Header="Справка"></MenuItem>
+            <MenuItem Header="Настройки"
+                      Click="OnSettingsOpen"></MenuItem>
         </Menu>
         <Border BorderBrush="#000000" 
                 BorderThickness="10" 

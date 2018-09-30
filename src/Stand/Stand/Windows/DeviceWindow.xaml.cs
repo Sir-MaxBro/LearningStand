@@ -17,8 +17,8 @@ namespace Stand.UI.Windows
 
         private Device _device;
         private string _ipAddress;
-        private int _port;
         private bool _isConnected;
+        private int _port;
 
         public DeviceWindow(Device device)
         {
@@ -96,8 +96,8 @@ namespace Stand.UI.Windows
 
                 if (!isConnectedSuccess)
                 {
-                   string errorMessage = "Не удалось установить подключение.";
-                   MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    string errorMessage = "Не удалось установить подключение.";
+                    MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 this.IsConnected = isConnectedSuccess;
             }

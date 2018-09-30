@@ -2,6 +2,7 @@
 using Stand.Domain.Abstract;
 using Stand.Domain.Infractructure.EventArgs;
 using Stand.Domain.Infractructure.Events;
+using Stand.General.Insrastructure.Settings;
 using System;
 using System.Linq;
 using System.Net.Sockets;
@@ -15,12 +16,17 @@ namespace Stand.Domain.Infractructure.Protocols
         private static Client _telnetClient;
 
         private readonly object lockObject = new object();
-        private readonly TimeSpan TIME_OUT_WAITING_ANSWER = new TimeSpan(10000);
+        private readonly TimeSpan _timeOutWaitingAnswer;
         private readonly TimeSpan TIME_OUT_TICK = new TimeSpan(1000);
 
         public event ReceivedEventHandler AnswerReceived;
 
-        public TelnetProtocol() { }
+        public TelnetProtocol()
+        {
+            var settingsService = SettingsService.GetInstance();
+            var connectionTimeOut = settingsService.GetSettings().ConnectionTimeOut;
+            _timeOutWaitingAnswer = new TimeSpan(hours: 0, minutes: 0, seconds: connectionTimeOut);
+        }
 
         public bool Connect(string host, int port)
         {
@@ -77,7 +83,7 @@ namespace Stand.Domain.Infractructure.Protocols
         {
             Thread answerThread = new Thread((objCommand) => this.GetAnswer((string)objCommand));
             answerThread.Start(command);
-            if (!answerThread.Join(TIME_OUT_WAITING_ANSWER))
+            if (!answerThread.Join(_timeOutWaitingAnswer))
             {
                 answerThread.Abort();
                 throw new TimeoutException("Timeout error.");
