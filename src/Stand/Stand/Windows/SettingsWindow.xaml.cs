@@ -35,7 +35,7 @@ namespace Stand.UI.Windows
             set
             {
                 _settings = value;
-                OnPropertyChanged("Settings");
+                this.OnPropertyChanged("Settings");
             }
         }
 
@@ -46,7 +46,7 @@ namespace Stand.UI.Windows
 
         protected void OnPropertyChanged(string name)
         {
-            var propertyChanged = PropertyChanged;
+            var propertyChanged = this.PropertyChanged;
             if (propertyChanged != null)
             {
                 propertyChanged(this, new PropertyChangedEventArgs(name));
@@ -99,7 +99,7 @@ namespace Stand.UI.Windows
                 _errors.Add(obj, false);
             }
             _errors[obj] = isValid;
-            OnPropertyChanged("CanSave");
+            this.OnPropertyChanged("CanSave");
         }
     }
 }
