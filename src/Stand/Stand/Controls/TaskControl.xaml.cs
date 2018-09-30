@@ -10,9 +10,12 @@ namespace Stand.UI.Controls
     /// </summary>
     public partial class TaskControl : UserControl, INotifyPropertyChanged
     {
-        private readonly Brush IS_DONE_COLOR = Brushes.Green;
-        private readonly Brush IS_NOT_DONE_COLOR = Brushes.Gray;
-        private readonly Brush CURRENT_COLOR = Brushes.Black;
+        private readonly Brush DONE_COLOR = Brushes.Green;
+        private readonly Brush NOT_DONE_COLOR = Brushes.Gray;
+        private readonly Brush DEFAULT_COLOR = Brushes.Black;
+        private readonly FontWeight CURRENT_FONT_WEIGHT = FontWeights.Bold;
+        private readonly FontWeight DEFAULT_FONT_WEIGHT = FontWeights.Normal;
+        private const string MARKER = "\u2713";
 
         private string _taskDescription;
         private string _rightTaskCommand;
@@ -26,6 +29,7 @@ namespace Stand.UI.Controls
         {
             InitializeComponent();
             this.DataContext = this;
+            this.markerLabel.Content = MARKER;
         }
 
         protected virtual void OnPropertyChanged(string propertyName = "")
@@ -64,17 +68,17 @@ namespace Stand.UI.Controls
                 _isDone = value;
                 if (_isDone)
                 {
-                    this.TextColor = IS_DONE_COLOR;
-                    taskTextBox.FontWeight = FontWeights.Normal;
+                    this.TextColor = DONE_COLOR;
+                    taskTextBox.FontWeight = DEFAULT_FONT_WEIGHT;
                 }
                 else
                 {
-                    this.TextColor = IS_NOT_DONE_COLOR;
+                    this.TextColor = NOT_DONE_COLOR;
                 }
             }
         }
 
-        protected Brush TextColor
+        public Brush TextColor
         {
             get { return _textColor; }
             set
@@ -95,8 +99,8 @@ namespace Stand.UI.Controls
                 _isCurrent = value;
                 if (_isCurrent)
                 {
-                    taskTextBox.FontWeight = FontWeights.Bold;
-                    this.TextColor = CURRENT_COLOR;
+                    taskTextBox.FontWeight = CURRENT_FONT_WEIGHT;
+                    this.TextColor = DEFAULT_COLOR;
                 }
             }
         }

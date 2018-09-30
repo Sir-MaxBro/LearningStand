@@ -13,18 +13,21 @@
         <ComboBox x:Name="labsComboBox" 
                   SelectionChanged="Labs_SelectionChanged"
                   VerticalContentAlignment="Center"></ComboBox>
-        <ItemsControl x:Name="taskStackPanel" Grid.Column="0" Grid.Row="1"
-                  ItemsSource="{Binding Tasks, Mode=TwoWay}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button Content="{Binding Description}"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <ScrollViewer Grid.Column="0" 
+                      Grid.Row="1">
+            <ItemsControl x:Name="taskStackPanel"
+                      ItemsSource="{Binding Tasks, Mode=TwoWay}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Description}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>
