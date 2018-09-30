@@ -1,4 +1,5 @@
 ﻿using Stand.Domain.Exceptions;
+using Stand.General.Insrastructure.Settings;
 using Stand.UI.Exceptions;
 using Stand.UI.Infrastructure.EventArgs;
 using Stand.UI.Infrastructure.Events;
@@ -23,9 +24,13 @@ namespace Stand.UI.Controls
         private TextBox _terminal;
         private string _text;
         private int _caretIndex;
+        private readonly int _errorWindowTimeout;
 
         public Terminal()
         {
+            var settingsService = SettingsService.GetInstance();
+            _errorWindowTimeout = settingsService.GetSettings().ErrorTimeOut;
+
             InitializeComponent();
             this.DataContext = this;
             _terminal = terminal;
@@ -101,22 +106,22 @@ namespace Stand.UI.Controls
             }
             catch (CommandNotFoundException ex)
             {
-                ExceptionWindow window = new ExceptionWindow(ex.Message, 25);
+                ExceptionWindow window = new ExceptionWindow(ex.Message, _errorWindowTimeout);
                 window.ShowDialog();
             }
             catch (CommandNotMatchAssignment ex)
             {
-                ExceptionWindow window = new ExceptionWindow(ex.Message, 25);
+                ExceptionWindow window = new ExceptionWindow(ex.Message, _errorWindowTimeout);
                 window.ShowDialog();
             }
             catch (EmptyTaskCommandsException ex)
             {
-                ExceptionWindow window = new ExceptionWindow(ex.Message, 25);
+                ExceptionWindow window = new ExceptionWindow(ex.Message, _errorWindowTimeout);
                 window.ShowDialog();
             }
             catch (Exception ex)
             {
-                ExceptionWindow window = new ExceptionWindow(ex.Message, 25);
+                ExceptionWindow window = new ExceptionWindow(ex.Message, _errorWindowTimeout);
                 window.ShowDialog();
             }
         }

@@ -101,6 +101,9 @@
     <Compile Include="Windows\ProtocolWindow.xaml.cs">
       <DependentUpon>ProtocolWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\ExceptionWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -162,6 +165,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -196,6 +203,10 @@
     <ProjectReference Include="..\Stand.Domain\Stand.Domain.csproj">
       <Project>{21d6e63d-69e0-46e1-8c81-326fba3906c0}</Project>
       <Name>Stand.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Stand.General\Stand.General.csproj">
+      <Project>{de5839fd-29d8-4df0-97e2-3a3ecb96317f}</Project>
+      <Name>Stand.General</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

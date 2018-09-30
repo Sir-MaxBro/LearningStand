@@ -1,6 +1,7 @@
 ﻿using Stand.Domain.Abstract;
 using Stand.Domain.Exceptions;
 using Stand.Domain.Extensions;
+using Stand.General.Insrastructure.Settings;
 using Stand.UI.Exceptions;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,7 +19,7 @@ namespace Stand.UI.Controls
     {
         private const string LAB_EXTENSION = ".xml";
 
-        private readonly string PATH_TO_LABS = System.AppDomain.CurrentDomain.BaseDirectory + "\\App_Data\\labs_tasks";
+        private readonly string _pathToTasks;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -32,7 +33,10 @@ namespace Stand.UI.Controls
             InitializeComponent();
             this.DataContext = this;
 
-            DirectoryInfo directory = new DirectoryInfo(PATH_TO_LABS);
+            var settingsService = SettingsService.GetInstance();
+            _pathToTasks = settingsService.GetSettings().PathToTasks;
+
+            DirectoryInfo directory = new DirectoryInfo(_pathToTasks);
             var listFiles = directory.GetFiles("*" + LAB_EXTENSION)
                 .Select(file => file.Name.Substring(0, file.Name.Length - LAB_EXTENSION.Length));
             labsComboBox.ItemsSource = listFiles;
@@ -113,7 +117,7 @@ namespace Stand.UI.Controls
             if ((sender as ComboBox).SelectedItem != null)
             {
                 string fileName = (sender as ComboBox).SelectedItem.ToString();
-                string fullPath = PATH_TO_LABS + "\\" + fileName + LAB_EXTENSION;
+                string fullPath = _pathToTasks + "\\" + fileName + LAB_EXTENSION;
                 this.LoadTasks(fullPath);
             }
         }

@@ -60,5 +60,11 @@ namespace Stand.UI
                 deviceWindow.Show();
             }
         }
+
+        protected virtual void OnSettingsOpen(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
+        }
     }
 }
