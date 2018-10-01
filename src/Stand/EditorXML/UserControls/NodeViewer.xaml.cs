@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using System.Xml.Linq;
 using EditorXML.Domain.Abstract;
 using EditorXML.Domain.Service;
+using EditorXML.Windows;
+using EditorXML.Domain.Entity;
 
 namespace EditorXML.UserControls
 {
@@ -26,22 +28,14 @@ namespace EditorXML.UserControls
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler ComboBoxSelectionChanged;
 
-        private XElement _element;
+        private List<Command> _commands;
 
-        public XElement Element
+        public List<Command> Commands
         {
-            get { return _element; }
-        }
-        public NodeViewer(XElement element)
-            : base()
-        {
-            InitializeComponent();
-            this.DataContext = this;
-            _element = element;
-
-            XAttribute nameAttribute = element.Attribute(XName.Get("name"));
-            header.Text = nameAttribute.Value;
+            get { return _commands; }
+            set { _commands = value; }
 
         }
         public NodeViewer()
@@ -51,24 +45,62 @@ namespace EditorXML.UserControls
 
         }
 
-        private void AddNodeButton_Click(object sender, RoutedEventArgs e)
+        private void ComboBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            XElement childElement = new XElement(_element);
-            var t = new NodeViewer(childElement);
-            //  stackPanel.Children.Add(t);
-            _element.Add(childElement);
+            ComboBox combobox = sender as ComboBox;
+            if (combobox.SelectedItem is Command)
+            {
+                Command selectedCommand = combobox.SelectedItem as Command;
+                Command uneditedCommand = selectedCommand.Clone() as Command;
+                EditCommandWindow editCommandWindow = new EditCommandWindow();
+                editCommandWindow.Command = selectedCommand;
+                if (editCommandWindow.ShowDialog() == true)
+                {
+                    if (editCommandWindow.IsRemove)
+                    {
+                        var index = _commands.IndexOf(selectedCommand);
+                        _commands.Remove(selectedCommand);
+                    }
+                }
+                else
+                {
+                    var index = _commands.IndexOf(selectedCommand);
+                    if (index != -1)
+                    {
+
+                        _commands[index] = uneditedCommand;
+                    }
+                }
+
+            }
         }
 
-        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.Content = null;
-            _element.Remove();
+            if (this.ComboBoxSelectionChanged != null)
+            {
+                this.ComboBoxSelectionChanged(this, e);
+            }
         }
 
-        private void header_TextChanged(object sender, TextChangedEventArgs e)
+        private void AddCommandButton_Click(object sender, RoutedEventArgs e)
         {
-            XAttribute nameAttribute = _element.Attribute(XName.Get("name"));
-            nameAttribute.Value = (sender as TextBox).Text;
+            EditCommandWindow addCommandWindow = new EditCommandWindow();
+
+            if (addCommandWindow.ShowDialog() == true)
+            {
+                _commands.Add(addCommandWindow.Command);
+                OnPropertyChanged("Commands");
+            }
+        }
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+
+            }
         }
 
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EditorXML.Domain.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +8,11 @@ using System.Xml.Linq;
 
 namespace EditorXML.Domain.Abstract
 {
-   public interface IXmlService
+   public interface ICommandService
     {
-        XDocument ReadFile(string path);
-        XDocument GetDefaultDocument();
-        XElement GetDefaultElement();
+       List<Command> ReadCommandsFromFile(string path);
+
+       void Save(List<Command> commands, String path);
 
     }
 }

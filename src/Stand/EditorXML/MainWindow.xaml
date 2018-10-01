@@ -21,13 +21,10 @@
         </Menu>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <StackPanel >
-                <StackPanel x:Name="Container">
+                <StackPanel x:Name="Container" Orientation="Horizontal" >
+                    
                 </StackPanel>
-                <Button Style="{StaticResource StandartButton}" Content="Добавить" Click="AddElement_Button_Click"
-                        Background="{DynamicResource greenGradient}"
-                        BorderThickness="1"
-                        BorderBrush="{DynamicResource grayBrush}"
-                        Width="70" Height="40"></Button>
+              
             </StackPanel>
         </ScrollViewer>
     </Grid>

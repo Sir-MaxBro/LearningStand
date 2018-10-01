@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ArrayOfCommand xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Command>
+    <SubCommands>
+      <Command>
+        <SubCommands />
+        <Name>t3</Name>
+        <Definiton>t</Definiton>
+      </Command>
+    </SubCommands>
+    <Name>t1</Name>
+    <Definiton>test</Definiton>
+  </Command>
+  <Command>
+    <SubCommands />
+    <Name>t2</Name>
+    <Definiton>tests</Definiton>
+  </Command>
+</ArrayOfCommand>

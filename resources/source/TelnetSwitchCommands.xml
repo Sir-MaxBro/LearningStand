@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<Commands>
+
 	<Command name="commandL1" description="commandL1 description">
         <Command name="commandL2" description="commandL2 description">
             <Command name="commandL3" description="commandL3 description"/>
@@ -16,4 +16,3 @@
             <Command name="commandL3134" description="commandL3134 description"/>
         </Command>
     </Command>
-</Commands>

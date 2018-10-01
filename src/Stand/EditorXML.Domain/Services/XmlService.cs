@@ -6,45 +6,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using EditorXML.Domain.Abstract;
+using EditorXML.Domain.Entity;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace EditorXML.Domain.Service
 {
-   public class XmlService : IXmlService
+    public class CommandService : ICommandService
     {
-        public XDocument ReadFile(string path)
+
+        public List<Command> ReadCommandsFromFile(string path)
         {
-            XDocument document;
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Command>));
+            List<Command> list = new List<Command>();
 
-            try
+            using (FileStream stream = File.OpenRead(path))
             {
-                document = XDocument.Load(path);
+                list = (List<Command>)serializer.Deserialize(stream);
             }
-            catch (IOException ex)
-            {
-                throw ex;
-            }
-
-            return document;
+            return list;
         }
 
-        public XDocument GetDefaultDocument()
+        public void Save(List<Command> commands, String path)
         {
-            XDocument document = new XDocument();
-            XElement node = GetDefaultElement();
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Command>));
 
-            node.Name = "commands";
-            document.Add(node);
-
-            return document;
-        }
-
-        public XElement GetDefaultElement()
-        {
-            XElement node = new XElement("command");
-
-            node.Add(new XAttribute("name", ""));
-
-            return node;
+            using (FileStream stream = new FileStream(path,FileMode.Create,FileAccess.Write))
+            {
+                serializer.Serialize(stream, commands);
+            }
         }
     }
 }

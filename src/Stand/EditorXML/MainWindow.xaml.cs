@@ -21,6 +21,8 @@ using EditorXML.Domain;
 using EditorXML.Domain.Abstract;
 using EditorXML.Domain.Service;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using EditorXML.Domain.Entity;
 
 namespace EditorXML
 {
@@ -31,23 +33,33 @@ namespace EditorXML
     {
         private const String EXTENSION_FILTER = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
 
-        private XDocument _document;
         private string _path;
-        private IXmlService _xmlService = new XmlService();
+        private List<Command> _commands;
+        private ICommandService _xmlService = new CommandService();
+
+
         public MainWindow()
         {
             InitializeComponent();
 
             this.DataContext = this;
-            _document = _xmlService.GetDefaultDocument();
+            _commands = new List<Command>();
 
         }
 
-        private void AddElement_Button_Click(object sender, RoutedEventArgs e)
+        private void AddElement_Button_Click(object sender, EventArgs e)
         {
-            XElement newXmlElement = _xmlService.GetDefaultElement();
-            _document.Root.Add(newXmlElement);
-            Container.Children.Add(new NodeViewer(newXmlElement));
+            var tt = e as SelectionChangedEventArgs;
+          Command selectedCommand=  (tt.Source as System.Windows.Controls.ComboBox).SelectedItem as Command;
+            var enumerator = Container.Children.IndexOf(sender as NodeViewer);
+            if (enumerator != Container.Children.Count - 1)
+            {
+                Container.Children.RemoveRange(enumerator+1, Container.Children.Count - 1);
+            }
+            NodeViewer node = new NodeViewer();
+            node.Commands = selectedCommand.SubCommands;
+            Container.Children.Add(node);
+            node.ComboBoxSelectionChanged += new EventHandler(AddElement_Button_Click);
 
         }
 
@@ -55,7 +67,8 @@ namespace EditorXML
         {
             _path = null;
             Container.Children.Clear();
-            _document = _xmlService.GetDefaultDocument();
+            _commands = new List<Command>();
+            ViewXmlNode();
         }
 
         private void Save_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -68,7 +81,6 @@ namespace EditorXML
             {
                 SaveInFile(_path);
             }
-
         }
 
         private void SaveAs_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -78,11 +90,12 @@ namespace EditorXML
 
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                SaveInNewFilePath(saveFileDialog.FileName);
+                SaveInNewFile(saveFileDialog.FileName);
             }
+
         }
 
-        private void SaveInNewFilePath(String path)
+        private void SaveInNewFile(String path)
         {
             SaveInFile(path);
             _path = path;
@@ -95,10 +108,7 @@ namespace EditorXML
 
         private void SaveInFile(String path)
         {
-            FileStream fileToSave = new FileStream(path, FileMode.Create);
-
-            _document.Save(fileToSave);
-            fileToSave.Close();
+            _xmlService.Save(_commands, path);
         }
 
         private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
@@ -110,30 +120,18 @@ namespace EditorXML
             {
                 Container.Children.Clear();
                 _path = openFileDialog.FileName;
-                _document = _xmlService.ReadFile(_path);
-                ViewXml(_document);
+                _commands = _xmlService.ReadCommandsFromFile(_path);
+                ViewXmlNode();
             }
         }
 
-        //todo it's 2 similar methods
-        private void ViewXml(XDocument document)
+        private void ViewXmlNode()
         {
-            foreach (XElement child in document.Root.Nodes())
-            {
-                NodeViewer node = new NodeViewer(child);
-                //todo bind it 
-                Container.Children.Add(node);
-                ViewXmlNodes(node, child);
-            }
-        }
-        private void ViewXmlNodes(NodeViewer treeNode, XElement element)
-        {
-            foreach (XElement child in element.Nodes())
-            {
-                NodeViewer node = new NodeViewer(child);
-                //   treeNode.stackPanel.Children.Add(node);
-                ViewXmlNodes(node, child);
-            }
+            NodeViewer node = new NodeViewer();
+            node.Commands = _commands;
+            Container.Children.Add(node);
+
+            node.ComboBoxSelectionChanged += new EventHandler(AddElement_Button_Click);
         }
     }
 }

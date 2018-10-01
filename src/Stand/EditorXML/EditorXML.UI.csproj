@@ -57,6 +57,9 @@
     <Compile Include="UserControls\NodeViewer.xaml.cs">
       <DependentUpon>NodeViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\EditCommandWindow.xaml.cs">
+      <DependentUpon>EditCommandWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Dictionary\ButtonDictionary.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -82,6 +85,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UserControls\NodeViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\EditCommandWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
