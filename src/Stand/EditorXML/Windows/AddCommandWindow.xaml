@@ -1,0 +1,35 @@
+﻿<Window x:Class="EditorXML.Windows.AddCommandWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AddCommandWindow" Height="300" Width="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label>Command text</Label>
+        <TextBox Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=Command.Name}"></TextBox>
+        <Label Grid.Row="1">Command definition</Label>
+        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=Command.Definiton}"  TextWrapping="Wrap"></TextBox>
+        <Button Style="{StaticResource StandartButton}" Content="Accept" 
+                        Background="{DynamicResource greenGradient}"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource grayBrush}"
+                                Margin="0"
+                   Grid.Row="2" Click="AcceptButton_Click"
+                       />
+            <Button Style="{StaticResource StandartButton}" Content="Cancel" 
+                        Background="{DynamicResource grayBrush}"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource grayBrush}"
+                                Margin="0"
+                Grid.Column="1"  Grid.Row="2" Click="CancelButton_Click"
+                       />
+
+    </Grid>
+</Window>

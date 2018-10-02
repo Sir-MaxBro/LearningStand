@@ -8,11 +8,9 @@ using System.Xml.Serialization;
 namespace EditorXML.Domain.Entity
 {
     [XmlRoot(ElementName = "command")]
-    public class Command:ICloneable
+    public class Command : ICloneable
     {
-        [XmlAttribute("name")]
         private String _name;
-        [XmlAttribute("description")]
         private string _definiton;
         private List<Command> _subCommands;
 
@@ -20,23 +18,24 @@ namespace EditorXML.Domain.Entity
         {
             _subCommands = new List<Command>();
         }
-      
-
-        public List<Command> SubCommands
-        {
-            get { return _subCommands; }
-            set { _subCommands = value; }
-        }
+        [XmlAttribute("name")]
         public String Name
         {
             get { return _name; }
             set { _name = value; }
         }
 
+        [XmlAttribute("description")]
         public string Definiton
         {
             get { return _definiton; }
             set { _definiton = value; }
+        }
+        [XmlElement("command")]
+        public List<Command> SubCommands
+        {
+            get { return _subCommands; }
+            set { _subCommands = value; }
         }
         public void AddCommand(Command subCommand)
         {
@@ -57,8 +56,8 @@ namespace EditorXML.Domain.Entity
         {
             Command clone = new Command();
             clone.Name = _name;
-            clone.Definiton =_definiton;
-            clone.SubCommands =new List<Command>(_subCommands);
+            clone.Definiton = _definiton;
+            clone.SubCommands = new List<Command>(_subCommands);
             return clone;
         }
     }

@@ -54,8 +54,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="UserControls\NodeViewer.xaml.cs">
-      <DependentUpon>NodeViewer.xaml</DependentUpon>
+    <Compile Include="UserControls\CommandBox.xaml.cs">
+      <DependentUpon>CommandBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddCommandWindow.xaml.cs">
+      <DependentUpon>AddCommandWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\EditCommandWindow.xaml.cs">
       <DependentUpon>EditCommandWindow.xaml</DependentUpon>
@@ -84,7 +87,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControls\NodeViewer.xaml">
+    <Page Include="UserControls\CommandBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AddCommandWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

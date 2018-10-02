@@ -19,10 +19,11 @@ using System.Xml.Linq;
 using EditorXML.UserControls;
 using EditorXML.Domain;
 using EditorXML.Domain.Abstract;
-using EditorXML.Domain.Service;
+using EditorXML.Domain.DAO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using EditorXML.Domain.Entity;
+using System.Collections.ObjectModel;
 
 namespace EditorXML
 {
@@ -34,8 +35,8 @@ namespace EditorXML
         private const String EXTENSION_FILTER = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
 
         private string _path;
-        private List<Command> _commands;
-        private ICommandService _xmlService = new CommandService();
+        private ObservableCollection<Command> _commands;
+        private ICommandDAO _xmlService = new XmlCommandDAO();
 
 
         public MainWindow()
@@ -43,23 +44,7 @@ namespace EditorXML
             InitializeComponent();
 
             this.DataContext = this;
-            _commands = new List<Command>();
-
-        }
-
-        private void AddElement_Button_Click(object sender, EventArgs e)
-        {
-            var tt = e as SelectionChangedEventArgs;
-          Command selectedCommand=  (tt.Source as System.Windows.Controls.ComboBox).SelectedItem as Command;
-            var enumerator = Container.Children.IndexOf(sender as NodeViewer);
-            if (enumerator != Container.Children.Count - 1)
-            {
-                Container.Children.RemoveRange(enumerator+1, Container.Children.Count - 1);
-            }
-            NodeViewer node = new NodeViewer();
-            node.Commands = selectedCommand.SubCommands;
-            Container.Children.Add(node);
-            node.ComboBoxSelectionChanged += new EventHandler(AddElement_Button_Click);
+            _commands = new ObservableCollection<Command>();
 
         }
 
@@ -67,8 +52,22 @@ namespace EditorXML
         {
             _path = null;
             Container.Children.Clear();
-            _commands = new List<Command>();
-            ViewXmlNode();
+            _commands = new ObservableCollection<Command>();
+            ViewCommands(_commands);
+        }
+
+        private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = EXTENSION_FILTER;
+
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Container.Children.Clear();
+                _path = openFileDialog.FileName;
+                _commands = new ObservableCollection<Command>(_xmlService.LoadCommands(_path));
+                ViewCommands(_commands);
+            }
         }
 
         private void Save_MenuItem_Click(object sender, RoutedEventArgs e)
@@ -95,43 +94,39 @@ namespace EditorXML
 
         }
 
+        private void SaveInFile(String path)
+        {
+            _xmlService.Save(_commands.ToList(), path);
+        }
+
         private void SaveInNewFile(String path)
         {
             SaveInFile(path);
             _path = path;
         }
 
-        private void SaveInFile()
+        private void ViewCommands(IList<Command> commands)
         {
-            SaveInFile(_path);
+            CommandBox commandBox = new CommandBox(commands);
+            Container.Children.Add(commandBox);
+            commandBox.ComboBoxSelectionChanged += new SelectionChangedEventHandler(ChangeSelectedCommand);
         }
 
-        private void SaveInFile(String path)
+        private void ChangeSelectedCommand(object sender, EventArgs e)
         {
-            _xmlService.Save(_commands, path);
-        }
+            var changedCommandEventArgs = e as SelectionChangedEventArgs;
+            Command selectedCommand = (changedCommandEventArgs.Source as System.Windows.Controls.ComboBox).SelectedItem as Command;
 
-        private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = EXTENSION_FILTER;
-
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            var selectedPosition = Container.Children.IndexOf(sender as CommandBox);
+            if (selectedPosition != Container.Children.Count - 1)
             {
-                Container.Children.Clear();
-                _path = openFileDialog.FileName;
-                _commands = _xmlService.ReadCommandsFromFile(_path);
-                ViewXmlNode();
+                int count = Container.Children.Count - selectedPosition;
+                Container.Children.RemoveRange(selectedPosition + 1, count);
             }
-        }
-
-        private void ViewXmlNode()
-        {
-            NodeViewer node = new NodeViewer();
-            node.Commands = _commands;
-            Container.Children.Add(node);
-
-            node.ComboBoxSelectionChanged += new EventHandler(AddElement_Button_Click);
+            if (selectedCommand != null)
+            {
+                ViewCommands(selectedCommand.SubCommands);
+            }
         }
     }
 }

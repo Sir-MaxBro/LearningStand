@@ -18,6 +18,7 @@
                 <MenuItem Header="Открыть" Click="MenuItem_Open_Click"/>
             </MenuItem>
             <MenuItem Header="Сохранить" Click="Save_MenuItem_Click"/>
+            <MenuItem Header="Save as" Click="SaveAs_MenuItem_Click"/>
         </Menu>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <StackPanel >

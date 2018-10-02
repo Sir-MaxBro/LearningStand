@@ -16,24 +16,22 @@ using System.Windows.Shapes;
 namespace EditorXML.Windows
 {
     /// <summary>
-    /// Interaction logic for EditCommand.xaml
+    /// Interaction logic for AddCommandWindow.xaml
     /// </summary>
-    public partial class EditCommandWindow : Window
+    public partial class AddCommandWindow : Window
     {
         Command command;
-        public bool IsRemoved { get; set; }
         public Command Command
         {
             get { return command; }
             set { command = value; }
         }
 
-        public EditCommandWindow()
+        public AddCommandWindow()
         {
             InitializeComponent();
-            command = new Command();
             this.DataContext = this;
-            IsRemoved = false;
+            command = new Command();
         }
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
@@ -47,14 +45,5 @@ namespace EditorXML.Windows
             this.DialogResult = false;
             this.Close();
         }
-        private void RemoveButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-            IsRemoved = true;
-            this.Close();
-        }
-        
-
-
     }
 }

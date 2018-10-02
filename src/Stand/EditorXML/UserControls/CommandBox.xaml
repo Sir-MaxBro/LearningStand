@@ -5,19 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              
              xmlns:local="clr-namespace:EditorXML.UserControls" 
-    x:Class="EditorXML.UserControls.NodeViewer" 
+    x:Class="EditorXML.UserControls.CommandBox" 
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="100">
     <StackPanel  Orientation="Horizontal" >
-        <ComboBox  MinWidth="50"  ItemsSource="{Binding Commands, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="ComboBox_MouseDoubleClick" SelectionChanged="ComboBox_SelectionChanged"  />
+        <ComboBox  MinWidth="50"  ItemsSource="{Binding Commands}" MouseDoubleClick="ComboBox_MouseDoubleClick" SelectionChanged="ComboBox_SelectionChanged" x:Name="CommandCombobox" />
         <StackPanel Orientation="Vertical" >
             <Button Style="{StaticResource StandartButton}" Content="+" 
                         Background="{DynamicResource greenGradient}"
                         BorderThickness="1"
                         BorderBrush="{DynamicResource grayBrush}"
-                                Margin="0"
-                    Height="25"
-                       Width="25" Click="AddCommandButton_Click"
+                        Margin="0"
+                       Height="25"
+                       Width="25" 
+                      Click="AddCommandButton_Click"
                        />
         </StackPanel>
     </StackPanel>

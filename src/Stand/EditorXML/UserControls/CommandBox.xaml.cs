@@ -15,33 +15,36 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using EditorXML.Domain.Abstract;
-using EditorXML.Domain.Service;
+using EditorXML.Domain.DAO;
 using EditorXML.Windows;
 using EditorXML.Domain.Entity;
+using System.Collections.ObjectModel;
 
 namespace EditorXML.UserControls
 {
     /// <summary>
     /// Interaction logic for NodeViewer.xaml
     /// </summary>
-    public partial class NodeViewer : UserControl, INotifyPropertyChanged
+    public partial class CommandBox : UserControl, INotifyPropertyChanged
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ComboBoxSelectionChanged;
+        public event SelectionChangedEventHandler ComboBoxSelectionChanged;
 
-        private List<Command> _commands;
+        private IList<Command> _commands;
 
-        public List<Command> Commands
+        public ObservableCollection<Command> Commands
         {
-            get { return _commands; }
+            get { return new ObservableCollection<Command>(_commands); }
             set { _commands = value; }
-
         }
-        public NodeViewer()
+
+        public CommandBox(IList<Command> commands)
+            : base()
         {
             InitializeComponent();
             this.DataContext = this;
+            this._commands = commands;
 
         }
 
@@ -51,27 +54,28 @@ namespace EditorXML.UserControls
             if (combobox.SelectedItem is Command)
             {
                 Command selectedCommand = combobox.SelectedItem as Command;
-                Command uneditedCommand = selectedCommand.Clone() as Command;
+                int index = _commands.IndexOf(selectedCommand);
+                Command commandForEdit = selectedCommand.Clone() as Command;
                 EditCommandWindow editCommandWindow = new EditCommandWindow();
-                editCommandWindow.Command = selectedCommand;
+
+                editCommandWindow.Command = commandForEdit;
+
                 if (editCommandWindow.ShowDialog() == true)
                 {
-                    if (editCommandWindow.IsRemove)
+                    if (editCommandWindow.IsRemoved)
                     {
-                        var index = _commands.IndexOf(selectedCommand);
                         _commands.Remove(selectedCommand);
                     }
-                }
-                else
-                {
-                    var index = _commands.IndexOf(selectedCommand);
-                    if (index != -1)
+                    else
                     {
-
-                        _commands[index] = uneditedCommand;
+                        if (!IsCommandExists(commandForEdit))
+                        {
+                            _commands[index] = commandForEdit;
+                            combobox.SelectedItem = commandForEdit;
+                        }
                     }
+                    OnPropertyChanged("Commands");
                 }
-
             }
         }
 
@@ -85,17 +89,31 @@ namespace EditorXML.UserControls
 
         private void AddCommandButton_Click(object sender, RoutedEventArgs e)
         {
-            EditCommandWindow addCommandWindow = new EditCommandWindow();
+            AddCommandWindow addCommandWindow = new AddCommandWindow();
 
             if (addCommandWindow.ShowDialog() == true)
             {
-                _commands.Add(addCommandWindow.Command);
-                OnPropertyChanged("Commands");
+                if (!IsCommandExists(addCommandWindow.Command))
+                {
+                    _commands.Add(addCommandWindow.Command);
+
+                    CommandCombobox.SelectedItem = addCommandWindow.Command;
+                    OnPropertyChanged("Commands");
+                }
             }
+        }
+        private bool IsCommandExists(Command command)
+        {
+            bool result = _commands.FirstOrDefault(comm => comm.Name == command.Name) != null;
+            if (result)
+            {
+                MessageBox.Show("command already exists.Changes doesn't save");
+            }
+            return result;
         }
         protected void OnPropertyChanged(string name)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            PropertyChangedEventHandler handler = this.PropertyChanged;
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(name));

@@ -8,11 +8,11 @@ using System.Xml.Linq;
 
 namespace EditorXML.Domain.Abstract
 {
-   public interface ICommandService
+   public interface ICommandDAO
     {
-       List<Command> ReadCommandsFromFile(string path);
+       List<Command> LoadCommands(string path);
 
-       void Save(List<Command> commands, String path);
+       void Save(ICollection<Command> commands, String path);
 
     }
 }

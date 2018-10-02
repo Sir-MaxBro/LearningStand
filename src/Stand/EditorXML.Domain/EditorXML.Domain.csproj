@@ -39,9 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstract\IXmlService.cs" />
+    <Compile Include="Abstract\ICommandService.cs" />
     <Compile Include="Entity\Command.cs" />
-    <Compile Include="Services\XmlService.cs" />
+    <Compile Include="Services\XmlCommandService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
