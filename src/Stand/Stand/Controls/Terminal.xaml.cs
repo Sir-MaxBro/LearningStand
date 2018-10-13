@@ -6,6 +6,7 @@ using Stand.UI.Infrastructure.Events;
 using Stand.UI.Windows;
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -86,21 +87,21 @@ namespace Stand.UI.Controls
             }
         }
 
-        private void ExecuteCommand(string currentCommand)
+        private async Task ExecuteCommand(string currentCommand)
         {
             var sendingCommandToExecute = this.SendingCommandToExecute;
             if (sendingCommandToExecute != null)
             {
-                sendingCommandToExecute(this, new CommandEventArgs { Command = currentCommand });
+                await sendingCommandToExecute(this, new CommandEventArgs { Command = currentCommand });
             }
         }
 
-        private void SetCommandToExecute()
+        private async void SetCommandToExecute()
         {
             try
             {
                 var command = _terminal.GetLineText(_terminal.LineCount - 1);
-                this.ExecuteCommand(command);
+                await this.ExecuteCommand(command);
                 _terminal.CaretIndex = _terminal.Text.Length;
                 _caretIndex = _terminal.CaretIndex;
             }

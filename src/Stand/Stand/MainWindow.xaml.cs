@@ -1,4 +1,4 @@
-﻿using Stand.UI.Infrastructure;
+﻿using Stand.IoC.DependencyInjection;
 using Stand.UI.Menu;
 using Stand.UI.Windows;
 using System.Linq;
@@ -39,26 +39,16 @@ namespace Stand.UI
 
         private void SwitchOpen_ButtonClick(object sender, RoutedEventArgs e)
         {
-            ProtocolWindow protocolWindow = new ProtocolWindow();
-            protocolWindow.Owner = this;
+            var deviceName = (sender as Control).Tag.ToString();
+            var deviceKey = this.GetDeviceKey(deviceName);
+            var device = IoCContainer.GetDevice(deviceKey);
+            device.DeviceName = deviceName.Substring(0, 1).ToUpper() + deviceName.Substring(1, deviceName.Length - 1);
 
-            if (protocolWindow.ShowDialog().Value)
-            {
-                // get protocol
-                var protocol = protocolWindow.Protocol;
-                string deviceName = (sender as Control).Tag.ToString();
-
-                // get device
-                var device = IoC.GetDevice(deviceName, protocol);
-                device.DeviceName = deviceName.Substring(0, 1).ToUpper() + deviceName.Substring(1, deviceName.Length - 1);
-
-                // open deviceWindow
-                DeviceWindow deviceWindow = new DeviceWindow(device);
-                // deviceWindow.Owner = this;
-                deviceWindow.Top = this.Top;
-                deviceWindow.Left = this.Left;
-                deviceWindow.Show();
-            }
+            // open deviceWindow
+            DeviceWindow deviceWindow = new DeviceWindow(device);
+            deviceWindow.Top = this.Top;
+            deviceWindow.Left = this.Left;
+            deviceWindow.Show();
         }
 
         protected virtual void OnSettingsOpen(object sender, RoutedEventArgs e)
@@ -71,6 +61,17 @@ namespace Stand.UI
         {
             var helpWindow = new HelpWindow();
             helpWindow.Show();
+        }
+
+        private string GetDeviceKey(string deviceName)
+        {
+            switch (deviceName)
+            {
+                case "switch":
+                    return IoCKeys.SwitchDeviceKey;
+                default:
+                    return string.Empty;
+            }
         }
     }
 }

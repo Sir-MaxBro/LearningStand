@@ -5,9 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
-using iMax.CommandParser.Infrastructure;
-using iMax.CommandParser.Exceptions;
-using iMax.CommandParser.Entities;
 
 namespace iMax.CommandParser.ConsoleUI
 {

@@ -1,23 +1,20 @@
 ﻿using Stand.Domain.Abstract.Contracts;
 using Stand.Domain.Exceptions;
-using Stand.Domain.Infractructure.Events;
+using Stand.General.Insrastructure.Params;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Stand.Domain.Abstract
 {
     [ContractClass(typeof(DeviceContract))]
     public abstract class Device
     {
-        private ReceivedEventHandler _receivedEvent;
-
         protected IProtocol _protocol;
         protected ICompiler _compiler;
 
-        protected Device(IProtocol protocol, ICompiler compiler)
+        protected Device(ICompiler compiler)
         {
-            _protocol = protocol;
             _compiler = compiler;
         }
 
@@ -25,19 +22,25 @@ namespace Stand.Domain.Abstract
 
         public string ProtocolName { get; set; }
 
+        public IProtocol Protocol
+        {
+            get { return _protocol; }
+            set { _protocol = value; }
+        }
+
         public ICompiler Compiler
         {
             get { return _compiler; }
         }
 
-        public bool Connect(string host, int port)
+        public async Task<bool> ConnectAsync(ConnectionParams connectionParams)
         {
-            if (string.IsNullOrEmpty(host))
+            if (connectionParams == null)
             {
                 return false;
             }
 
-            return _protocol.Connect(host, port);
+            return _protocol != null ? await _protocol.ConnectAsync(connectionParams) : false;
         }
 
         public void Disconnect()
@@ -48,46 +51,27 @@ namespace Stand.Domain.Abstract
             }
         }
 
-        public void ExecuteCommand(string command)
+        public async Task<string> ExecuteCommandAsync(string command)
         {
+            string answer = string.Empty;
             var validResult = _compiler.IsValid(command);
             if (validResult.IsValid)
             {
-                _protocol.ExecuteCommand(command);
+                answer = await _protocol.ExecuteCommandAsync(command);
             }
             else
             {
-                StringBuilder answer = new StringBuilder("Команда не найдена\n");
-                answer.AppendLine("Может вы имели ввиду: '" + validResult.MostSimilarCommand + "'");
-                throw new CommandNotFoundException(answer.ToString());
+                StringBuilder exceptionAnswer = new StringBuilder("Команда не найдена\n");
+                exceptionAnswer.AppendLine("Может вы имели ввиду: '" + validResult.MostSimilarCommand + "'");
+                throw new CommandNotFoundException(exceptionAnswer.ToString());
             }
+
+            return answer;
         }
 
-        public void TryPassword(string password)
+        public async Task<string> TryPassword(string password)
         {
-            _protocol.ExecuteCommand(password.Trim());
-        }
-
-        public event ReceivedEventHandler AnswerReceived
-        {
-            add
-            {
-                lock (this)
-                {
-                    if (_receivedEvent == null
-                        || !_receivedEvent.GetInvocationList().Any(del => del.Method == value.Method))
-                    {
-                        _receivedEvent += value;
-                    }
-                }
-            }
-            remove
-            {
-                lock (this)
-                {
-                    _receivedEvent -= value;
-                }
-            }
+            return await _protocol.ExecuteCommandAsync(password.Trim());
         }
     }
 }
