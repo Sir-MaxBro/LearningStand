@@ -1,17 +1,14 @@
-﻿using Stand.Domain.Infractructure.Events;
+﻿using Stand.General.Insrastructure.Params;
+using System.Threading.Tasks;
 
 namespace Stand.Domain.Abstract
 {
     public interface IProtocol
     {
-        event ReceivedEventHandler AnswerReceived;
-
-        bool Connect(string host, int port);
+        Task<bool> ConnectAsync(ConnectionParams connectionParams);
 
         void Disconnect();
 
-        void ExecuteCommand(string command);
-
-        void SendAnswer(string message);
+        Task<string> ExecuteCommandAsync(string command);
     }
 }

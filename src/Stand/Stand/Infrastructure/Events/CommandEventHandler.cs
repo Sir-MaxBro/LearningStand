@@ -1,6 +1,7 @@
 ﻿using Stand.UI.Infrastructure.EventArgs;
+using System.Threading.Tasks;
 
 namespace Stand.UI.Infrastructure.Events
 {
-    public delegate void CommandEventHandler(object sender, CommandEventArgs e);
+    public delegate Task CommandEventHandler(object sender, CommandEventArgs e);
 }

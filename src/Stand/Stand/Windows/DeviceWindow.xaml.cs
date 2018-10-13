@@ -1,9 +1,11 @@
 ﻿using Stand.Domain.Abstract;
 using Stand.Domain.Exceptions;
-using Stand.Domain.Infractructure.EventArgs;
+using Stand.General.Insrastructure.Params;
+using Stand.IoC.DependencyInjection;
 using Stand.UI.Exceptions;
 using Stand.UI.Infrastructure.EventArgs;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace Stand.UI.Windows
@@ -16,14 +18,11 @@ namespace Stand.UI.Windows
         public event PropertyChangedEventHandler PropertyChanged;
 
         private Device _device;
-        private string _ipAddress;
         private bool _isConnected;
-        private int _port;
 
         public DeviceWindow(Device device)
         {
             _device = device;
-            _device.AnswerReceived += this.AnswerReceiver;
 
             this.InitializeComponent();
 
@@ -59,19 +58,20 @@ namespace Stand.UI.Windows
             }
         }
 
-        private void Terminal_SendingCommandToExecute(object sender, CommandEventArgs e)
+        private async Task Terminal_SendingCommandToExecute(object sender, CommandEventArgs e)
         {
+            var answer = string.Empty;
             try
             {
                 string[] commandSplit = e.Command.Split(':', '#');
                 if (!commandSplit[0].ToLower().Contains("password"))
                 {
                     taskPanel.CheckTask(e.Command);
-                    _device.ExecuteCommand(e.Command);
+                    answer = await _device.ExecuteCommandAsync(e.Command);
                 }
                 else
                 {
-                    _device.TryPassword(commandSplit[1]);
+                    answer = await _device.TryPassword(commandSplit[1]);
                 }
             }
             catch (CommandNotFoundException ex)
@@ -86,19 +86,33 @@ namespace Stand.UI.Windows
             {
                 throw ex;
             }
+
+            if (!string.IsNullOrEmpty(answer))
+            {
+                terminal.AddText(answer);
+            }
         }
 
-        private void Connect_ButtonClick(object sender, RoutedEventArgs e)
+        private async void Connect_ButtonClick(object sender, RoutedEventArgs e)
         {
             if (!this.IsConnected)
             {
-                bool isConnectedSuccess = _device.Connect(settingPanel.IPAddress, settingPanel.Port);
+                var connectionParams = new ConnectionParams
+                {
+                    Host = settingPanel.IPAddress,
+                    Port = settingPanel.Port,
+                    Username = "myname",
+                    Password = "mypassword",
+                };
+
+                bool isConnectedSuccess = await _device.ConnectAsync(connectionParams);
 
                 if (!isConnectedSuccess)
                 {
                     string errorMessage = "Не удалось установить подключение.";
                     MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+
                 this.IsConnected = isConnectedSuccess;
             }
         }
@@ -112,9 +126,11 @@ namespace Stand.UI.Windows
             this.IsConnected = false;
         }
 
-        private void AnswerReceiver(object sender, ReceivedEventArgs args)
+        private void OnProtocolChanged(object sender, ProtocolEventArgs e)
         {
-            terminal.AddText(args.Answer);
+            var protocolName = e.ProtocolName;
+            var protocol = IoCContainer.GetProtocol(protocolName);
+            _device.Protocol = protocol;
         }
     }
 }

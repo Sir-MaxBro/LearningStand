@@ -42,6 +42,9 @@
     <Reference Include="PrimS.Telnet, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Telnet.0.8.1\lib\net45\PrimS.Telnet.dll</HintPath>
     </Reference>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -62,6 +65,7 @@
     <Compile Include="Extensions\CommandExtension.cs" />
     <Compile Include="Infractructure\Compilers\SwitchCompiler.cs" />
     <Compile Include="Infractructure\Devices\SwitchDevice.cs" />
+    <Compile Include="Infractructure\Protocols\SshProtocol.cs" />
     <Compile Include="Infractructure\Protocols\TelnetProtocol.cs" />
     <Compile Include="Infractructure\EventArgs\ReceivedEventArgs.cs" />
     <Compile Include="Infractructure\Events\ReceivedEventHandler.cs" />

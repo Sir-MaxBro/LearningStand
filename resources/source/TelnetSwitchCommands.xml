@@ -2,7 +2,8 @@
 <Commands>
 	<Command name="commandL1" description="commandL1 description">
         <Command name="commandL2" description="commandL2 description">
-            <Command name="commandL3" description="commandL3 description"></Command>
+            <Command name="commandL3" description="commandL3 description"
+                     type="int" from="1" to="3"></Command>
             <Command name="commandL31" description="commandL31 description"></Command>
         </Command>
     </Command>

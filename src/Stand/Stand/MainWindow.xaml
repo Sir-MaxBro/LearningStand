@@ -32,7 +32,6 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-
                 <Button Style="{StaticResource DeviceSelectButton}" Grid.Row="0" 
                         Click="SwitchOpen_ButtonClick" Tag="switch">
                     <Button.Content>

@@ -1,4 +1,8 @@
 ﻿using Stand.Domain.Extensions;
+using Stand.IoC.DependencyInjection;
+using Stand.UI.Infrastructure.EventArgs;
+using Stand.UI.Infrastructure.Events;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,17 +19,22 @@ namespace Stand.UI.Controls
         private int _port;
         private bool _isPortValid;
         private bool _isIPValid;
+        private readonly Dictionary<string, int> _protocolNames = new Dictionary<string, int>
+        {
+            { IoCKeys.TelnetProtocolKey, 23 },
+            { IoCKeys.SshProtocolKey, 22 },
+        };
 
-        public event PropertyChangedEventHandler PropertyChanged;
         public event RoutedEventHandler Connect;
         public event RoutedEventHandler Disconnect;
+        public event ProtocolEventHandler ProtocolChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public SettingPanel()
         {
             InitializeComponent();
             this.DataContext = this;
-            this.Port = 23;
-            this.IPAddress = "10.203.0.3";
+            this.IPAddress = "127.0.0.1";
         }
 
         public bool CanConnect
@@ -38,6 +47,16 @@ namespace Stand.UI.Controls
             get { return this.CanConnect; }
         }
 
+        public bool CanInputProtocol
+        {
+            get { return false; }
+        }
+
+        public IEnumerable<string> ProtocolNames
+        {
+            get { return _protocolNames.Keys; }
+        }
+
         public string IPAddress
         {
             get { return _ipAddress; }
@@ -46,7 +65,7 @@ namespace Stand.UI.Controls
                 if (_ipAddress != value)
                 {
                     _ipAddress = value;
-                    OnPropertyChanged("IPAddress");
+                    this.OnPropertyChanged("IPAddress");
                 }
             }
         }
@@ -59,14 +78,14 @@ namespace Stand.UI.Controls
                 if (_port != value)
                 {
                     _port = value;
-                    OnPropertyChanged("Port");
+                    this.OnPropertyChanged("Port");
                 }
             }
         }
 
         protected void OnPropertyChanged(string name)
         {
-            var propertyChanged = PropertyChanged;
+            var propertyChanged = this.PropertyChanged;
             if (propertyChanged != null)
             {
                 propertyChanged(this, new PropertyChangedEventArgs(name));
@@ -75,7 +94,7 @@ namespace Stand.UI.Controls
 
         private void Connect_ButtonClick(object sender, RoutedEventArgs e)
         {
-            var connect = Connect;
+            var connect = this.Connect;
             if (connect != null)
             {
                 connect(sender, e);
@@ -84,7 +103,7 @@ namespace Stand.UI.Controls
 
         private void Disconnect_ButtonClick(object sender, RoutedEventArgs e)
         {
-            var disconnect = Disconnect;
+            var disconnect = this.Disconnect;
             if (disconnect != null)
             {
                 disconnect(sender, e);
@@ -95,7 +114,7 @@ namespace Stand.UI.Controls
         {
             var text = (sender as TextBox)?.Text;
             _isPortValid = int.TryParse(text, out int result);
-            RefreshConnectEnable();
+            this.RefreshConnectEnable();
         }
 
         private void OnIPChanged(object sender, TextChangedEventArgs e)
@@ -110,13 +129,26 @@ namespace Stand.UI.Controls
                     _isIPValid = true;
                 }
             }
-            RefreshConnectEnable();
+            this.RefreshConnectEnable();
         }
 
         private void RefreshConnectEnable()
         {
-            OnPropertyChanged("CanConnect");
-            OnPropertyChanged("CanDisconnect");
+            this.OnPropertyChanged("CanConnect");
+            this.OnPropertyChanged("CanDisconnect");
+        }
+
+        private void OnProtocolChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var protocolName = (sender as ComboBox).SelectedValue.ToString();
+            this.Port = _protocolNames[protocolName];
+            this.OnPropertyChanged("CanInputProtocol");
+
+            var protocolChanged = this.ProtocolChanged;
+            if (protocolChanged != null)
+            {
+                protocolChanged(sender, new ProtocolEventArgs { ProtocolName = protocolName });
+            }
         }
     }
 }

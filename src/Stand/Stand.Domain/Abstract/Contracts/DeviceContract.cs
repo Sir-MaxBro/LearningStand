@@ -6,10 +6,9 @@ namespace Stand.Domain.Abstract.Contracts
     [ContractClassFor(typeof(Device))]
     internal abstract class DeviceContract : Device
     {
-        protected DeviceContract(IProtocol protocol, ICompiler compiler)
-            : base(protocol, compiler)
+        protected DeviceContract(ICompiler compiler)
+            : base(compiler)
         {
-            Contract.Requires<ArgumentNullException>(protocol != null);
             Contract.Requires<ArgumentNullException>(compiler != null);
         }
     }
