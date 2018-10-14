@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="Dictionary\RadioButtonDictionary.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Dictionary\TextBoxDictionary.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Dictionary\LabelDictionary.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Dictionary\PasswordBoxDictionary.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -14,10 +14,11 @@ namespace Stand.Domain.Infractructure.Protocols
 {
     public class TelnetProtocol : IProtocol
     {
-        private static Client _telnetClient;
-
+        private const string DEFAULT_PASSWORD = "default_password";
         private readonly TimeSpan _timeOutWaitingAnswer;
         private readonly TimeSpan TIME_OUT_TICK = new TimeSpan(1000);
+
+        private Client _telnetClient;
 
         public TelnetProtocol()
         {
@@ -37,7 +38,7 @@ namespace Stand.Domain.Infractructure.Protocols
                 var regex = new Regex("Password:");
                 if (regex.Match(answer).Success)
                 {
-                    await this.SendCommandToDevice(connectionParams.Password);
+                    await this.SendCommandToDevice(connectionParams.Password ?? DEFAULT_PASSWORD);
                 }
             }
             catch (SocketException ex)
