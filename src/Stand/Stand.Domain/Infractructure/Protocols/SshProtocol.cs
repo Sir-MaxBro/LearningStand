@@ -8,14 +8,17 @@ namespace Stand.Domain.Infractructure.Protocols
 {
     public class SshProtocol : IProtocol
     {
+        private const string DEFAULT_USERNAME = "default_user";
+        private const string DEFAULT_PASSWORD = "default_password";
+
         private SshClient _sshClient;
 
         public async Task<bool> ConnectAsync(ConnectionParams connectionParams)
         {
             var host = connectionParams.Host;
             var port = connectionParams.Port;
-            var username = connectionParams.Username;
-            var password = connectionParams.Password;
+            var username = connectionParams.Username ?? DEFAULT_USERNAME;
+            var password = connectionParams.Password ?? DEFAULT_PASSWORD;
 
             try
             {

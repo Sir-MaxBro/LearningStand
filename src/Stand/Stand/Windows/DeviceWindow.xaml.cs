@@ -97,23 +97,27 @@ namespace Stand.UI.Windows
         {
             if (!this.IsConnected)
             {
-                var connectionParams = new ConnectionParams
+                var passwordWindow = new PasswordWindow();
+                if ((bool)passwordWindow.ShowDialog())
                 {
-                    Host = settingPanel.IPAddress,
-                    Port = settingPanel.Port,
-                    Username = "myname",
-                    Password = "mypassword",
-                };
+                    var connectionParams = new ConnectionParams
+                    {
+                        Host = settingPanel.IPAddress,
+                        Port = settingPanel.Port,
+                        Username = passwordWindow.Login,
+                        Password = passwordWindow.Password,
+                    };
 
-                bool isConnectedSuccess = await _device.ConnectAsync(connectionParams);
+                    bool isConnectedSuccess = await _device.ConnectAsync(connectionParams);
 
-                if (!isConnectedSuccess)
-                {
-                    string errorMessage = "Не удалось установить подключение.";
-                    MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    if (!isConnectedSuccess)
+                    {
+                        string errorMessage = "Не удалось установить подключение.";
+                        MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+
+                    this.IsConnected = isConnectedSuccess;
                 }
-
-                this.IsConnected = isConnectedSuccess;
             }
         }
 
