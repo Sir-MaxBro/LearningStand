@@ -107,6 +107,9 @@
     <Compile Include="Infrastructure\Events\ProtocolEventHandler.cs" />
     <Compile Include="Infrastructure\Events\CommandEventHandler.cs" />
     <Compile Include="Menu\MenuData.cs" />
+    <Compile Include="Windows\BrowserWindow.xaml.cs">
+      <DependentUpon>BrowserWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\DeviceWindow.xaml.cs">
       <DependentUpon>DeviceWindow.xaml</DependentUpon>
     </Compile>
@@ -176,6 +179,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\BrowserWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\DeviceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
