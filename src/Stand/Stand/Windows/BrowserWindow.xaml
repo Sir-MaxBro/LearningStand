@@ -6,12 +6,24 @@
         xmlns:local="clr-namespace:Stand.UI.Windows"
         mc:Ignorable="d"
         Title="BrowserWindow" Height="450" Width="800">
+    <Window.CommandBindings>
+        <CommandBinding Command="NavigationCommands.BrowseBack" CanExecute="BrowseBack_CanExecute" Executed="BrowseBack_Executed" />
+        <CommandBinding Command="NavigationCommands.BrowseForward" CanExecute="BrowseForward_CanExecute" Executed="BrowseForward_Executed" />
+    </Window.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
+            <Button Command="NavigationCommands.BrowseBack" Margin="5, 10, 5, 10">
+                <Polyline Stroke="#FFE8BD2C" StrokeThickness="1" 
+   Points="0,5 5,10 5,0 0,5 10,5 "></Polyline>
+            </Button>
+            <Button Command="NavigationCommands.BrowseBack"  Margin="5, 10, 5, 10">
+                <Polyline Stroke="#FFE8BD2C" StrokeThickness="1" 
+   Points="0,5 10,5 5,10  5,0 10,5"></Polyline>
+            </Button>
             <TextBox Width="200" KeyUp="TextBox_KeyUp" Text="{Binding Path=CurrentUrl}"></TextBox>
             <Button Grid.Row="2" Grid.ColumnSpan="2"
                 Style="{StaticResource StandartButton}"
@@ -21,7 +33,7 @@
                 Margin="5, 10, 5, 10"
                 Content="Connect"
                 Click="OnSubmit_ButtonClick"
-                    Width="100"></Button>
+                    Width="80" IsDefault="True"></Button>
         </StackPanel>
         <WebBrowser Grid.Row="1"  x:Name="Browser"></WebBrowser>
     </Grid>
