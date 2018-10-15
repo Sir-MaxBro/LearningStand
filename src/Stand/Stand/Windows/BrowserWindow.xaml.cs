@@ -35,7 +35,7 @@ namespace Stand.UI.Windows
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
             var inputKey = (sender as TextBox).Text;
-            if (inputKey != null)
+            if (e.Key == Key.Enter)
             {
                 LoadWebPage(inputKey);
             }
@@ -44,18 +44,38 @@ namespace Stand.UI.Windows
         {
             Browser.Navigate(url);
         }
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+
 
         private void OnSubmit_ButtonClick(object sender, RoutedEventArgs e)
         {
-            if (_currentUrl!=null)
+            if (_currentUrl != null)
             {
-                Browser.Navigate(_currentUrl);
+                string prefix = _currentUrl.StartsWith("http") ? "" : "http://";
+                Browser.Navigate(prefix + _currentUrl);
             }
-          
+
+        }
+        private void BrowseBack_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ((Browser != null) && (Browser.CanGoBack));
+        }
+        private void BrowseBack_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Browser.GoBack();
+        }
+
+        private void BrowseForward_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = ((Browser != null) && (Browser.CanGoForward));
+        }
+
+        private void BrowseForward_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Browser.GoForward();
+        }
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
