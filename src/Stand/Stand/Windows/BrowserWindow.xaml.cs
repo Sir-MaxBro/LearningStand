@@ -46,11 +46,12 @@ namespace Stand.UI.Windows
         }
 
 
-        private void OnSubmit_ButtonClick(object sender, RoutedEventArgs e)
+       private void OnSubmit_ButtonClick(object sender, RoutedEventArgs e)
         {
             if (_currentUrl != null)
             {
-                string prefix = _currentUrl.StartsWith("http") ? "" : "http://";
+
+                string prefix = _currentUrl.StartsWith("http://") || _currentUrl.StartsWith("https://") ? "" : "http://";
                 Browser.Navigate(prefix + _currentUrl);
             }
 
@@ -58,6 +59,7 @@ namespace Stand.UI.Windows
         private void BrowseBack_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = ((Browser != null) && (Browser.CanGoBack));
+            (e.OriginalSource as Button).Visibility = e.CanExecute ? Visibility.Visible : Visibility.Hidden;
         }
         private void BrowseBack_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -67,6 +69,8 @@ namespace Stand.UI.Windows
         private void BrowseForward_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = ((Browser != null) && (Browser.CanGoForward));
+
+            (e.OriginalSource as Button).Visibility = e.CanExecute ? Visibility.Visible : Visibility.Hidden;
         }
 
         private void BrowseForward_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -77,5 +81,12 @@ namespace Stand.UI.Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            _currentUrl = e.Uri.AbsoluteUri;
+            OnPropertyChanged("CurrentUrl");
+        }
+    }
     }
 }

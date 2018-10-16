@@ -10,31 +10,46 @@
         <CommandBinding Command="NavigationCommands.BrowseBack" CanExecute="BrowseBack_CanExecute" Executed="BrowseBack_Executed" />
         <CommandBinding Command="NavigationCommands.BrowseForward" CanExecute="BrowseForward_CanExecute" Executed="BrowseForward_Executed" />
     </Window.CommandBindings>
-    <Grid>
+ 
+ <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Button Command="NavigationCommands.BrowseBack" Margin="5, 10, 5, 10">
-                <Polyline Stroke="#FFE8BD2C" StrokeThickness="1" 
-   Points="0,5 5,10 5,0 0,5 10,5 "></Polyline>
+            <Button Command="NavigationCommands.BrowseBack" Width="40"  Height="40" Margin="5, 10, 5, 10">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Grid>
+                            <Ellipse StrokeThickness="1" Stroke="{DynamicResource greenGradient}" />
+                            <Polygon  Points="15,15 35,15 35,25 15,25 15,30 3,20 15,10"  Fill="{DynamicResource greenGradient}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
-            <Button Command="NavigationCommands.BrowseBack"  Margin="5, 10, 5, 10">
-                <Polyline Stroke="#FFE8BD2C" StrokeThickness="1" 
-   Points="0,5 10,5 5,10  5,0 10,5"></Polyline>
+            <Button Command="NavigationCommands.BrowseForward"  Width="40"  Height="40" Margin="5, 10, 5, 10">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Grid>
+                            <Polygon Points="25,15 5,15 5,25 25,25 25,30 37,20 25,10"  Fill="{DynamicResource greenGradient}"/>
+                            <Ellipse StrokeThickness="1" Stroke="{DynamicResource greenGradient}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Button.Template>
+
             </Button>
-            <TextBox Width="200" KeyUp="TextBox_KeyUp" Text="{Binding Path=CurrentUrl}"></TextBox>
+            <TextBox Height="30" Width="200" KeyUp="TextBox_KeyUp" Text="{Binding CurrentUrl}"/>
             <Button Grid.Row="2" Grid.ColumnSpan="2"
-                Style="{StaticResource StandartButton}"
+               Style="{StaticResource StandartButton}"
                 Background="{DynamicResource greenGradient}"
                 BorderThickness="1"
                 BorderBrush="{DynamicResource grayBrush}"
                 Margin="5, 10, 5, 10"
                 Content="Connect"
                 Click="OnSubmit_ButtonClick"
-                    Width="80" IsDefault="True"></Button>
+                    Width="80" IsDefault="True"/>
         </StackPanel>
-        <WebBrowser Grid.Row="1"  x:Name="Browser"></WebBrowser>
+        <WebBrowser Grid.Row="1" x:Name="Browser" Navigated="Browser_Navigated"/>
     </Grid>
+        
 </Window>
