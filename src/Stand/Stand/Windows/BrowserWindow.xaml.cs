@@ -45,8 +45,7 @@ namespace Stand.UI.Windows
             Browser.Navigate(url);
         }
 
-
-       private void OnSubmit_ButtonClick(object sender, RoutedEventArgs e)
+        private void OnSubmit_ButtonClick(object sender, RoutedEventArgs e)
         {
             if (_currentUrl != null)
             {
@@ -87,6 +86,5 @@ namespace Stand.UI.Windows
             _currentUrl = e.Uri.AbsoluteUri;
             OnPropertyChanged("CurrentUrl");
         }
-    }
     }
 }
