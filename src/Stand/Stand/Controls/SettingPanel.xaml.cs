@@ -10,7 +10,6 @@ namespace Stand.UI.Controls
     /// </summary>
     public partial class SettingPanel : UserControl, INotifyPropertyChanged
     {
-        private readonly char[] allowedCharacters = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.' };
         private string _ipAddress;
         private int _port;
         private bool _isPortValid;
@@ -100,17 +99,20 @@ namespace Stand.UI.Controls
 
         private void OnIPChanged(object sender, TextChangedEventArgs e)
         {
-            _isIPValid = false;
             var text = (sender as TextBox)?.Text;
+
+            _isIPValid = false;
+            (sender as TextBox).ToolTip = "Input there correct ip-address";
             if (!string.IsNullOrEmpty(text))
             {
-                var textWithoutAllowed = text?.Except(allowedCharacters);
-                if (string.IsNullOrEmpty(textWithoutAllowed))
+                System.Net.IPAddress realIPAddress;
+                if (System.Net.IPAddress.TryParse(text, out realIPAddress))
                 {
+                    (sender as TextBox).ToolTip = realIPAddress;
                     _isIPValid = true;
                 }
             }
-            RefreshConnectEnable();
+            this.RefreshConnectEnable();
         }
 
         private void RefreshConnectEnable()
