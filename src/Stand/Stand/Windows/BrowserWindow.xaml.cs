@@ -42,16 +42,15 @@ namespace Stand.UI.Windows
         }
         private void LoadWebPage(string url)
         {
-            Browser.Navigate(url);
+            string prefix = url.StartsWith("http://") || url.StartsWith("https://") ? "" : "http://";
+            Browser.Navigate(prefix+url);
         }
 
         private void OnSubmit_ButtonClick(object sender, RoutedEventArgs e)
         {
             if (_currentUrl != null)
             {
-
-                string prefix = _currentUrl.StartsWith("http://") || _currentUrl.StartsWith("https://") ? "" : "http://";
-                Browser.Navigate(prefix + _currentUrl);
+                LoadWebPage(_currentUrl);
             }
 
         }
