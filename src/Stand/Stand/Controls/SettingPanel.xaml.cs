@@ -109,6 +109,7 @@ namespace Stand.UI.Controls
                 if (System.Net.IPAddress.TryParse(text, out realIPAddress))
                 {
                     (sender as TextBox).ToolTip = realIPAddress;
+                    _ipAddress = realIPAddress.ToString();
                     _isIPValid = true;
                 }
             }
